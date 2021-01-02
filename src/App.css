@@ -1,0 +1,11 @@
+body {
+    font-family : sans-serif;
+    overflow: hidden;
+}
+
+.MainPath,
+canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
