@@ -13,6 +13,7 @@ const MainView = (src) => {
         var worldScene,camera,renderer,clock;
         var groundMesh;
         var mixers = [];
+        var Obstacles = [], SteeringEntities = [], mainCharacter;
         var hasBeen = {};
 
         const InitScene = () => {
@@ -110,6 +111,7 @@ const MainView = (src) => {
                     textMesh.receiveShadow = true;
 
                     var textEntity = new Entity(textMesh);
+                    Obstacles.push(textEntity);
                     worldScene.add(textEntity);
                 });
             }
@@ -135,6 +137,7 @@ const MainView = (src) => {
                     textMesh.receiveShadow = true;
 
                     var textEntity = new Entity(textMesh);
+                    Obstacles.push(textEntity);
                     worldScene.add(textEntity);
                 });
             }
@@ -225,10 +228,20 @@ const MainView = (src) => {
                     }
                     
                     var unitEntity;
-                    if (unit.entity_type === 'Steering') {
+                    if (unit.entity_type === 'Steering' || unit.entity_type === 'Main_character') {
                         unitEntity = new SteeringEntity(unitScene);
-                    } else {
+                        if (unit.entity_type === 'Steering') {
+                            SteeringEntities.push(unitEntity);
+                        } else {
+                            mainCharacter = unitEntity;
+                        }
+                    } 
+                    else if (unit.entity_type === 'Obstacle') {
                         unitEntity = new Entity(unitScene);
+                        Obstacles.push(unitEntity);
+                    } 
+                    else {
+                        unitEntity = unitScene;
                     }
                     worldScene.add(unitEntity);
 
@@ -275,7 +288,9 @@ const MainView = (src) => {
         }
 
         const gameLogic = () => {
-            
+            if (mainCharacter) {
+                mainCharacter.update();
+            }
         }
 
         var dt = 1000/60;
@@ -309,34 +324,49 @@ const MainView = (src) => {
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        const onDocumentKeyboard = (event) => {
+        const onPushKeyboard = (event) => {
             var keyName = event.key;
             //console.log(keyName);
-            if (keyName === 'ArrowUp') {
-                camera.position.z -= 0.5;
-            } else if (keyName === 'ArrowDown') {
-                camera.position.z += 0.5;
-            } else if (keyName === 'ArrowLeft') {
-                camera.position.x -= 0.5;
-            } else if (keyName === 'ArrowRight') {
-                camera.position.x += 0.5;
-            } else if (keyName === 'w') {
-                camera.position.y += 0.5;
+            if (keyName === 'w') {
+                mainCharacter.moveUp();
             } else if (keyName === 's') {
-                camera.position.y -= 0.5;
-            } else if (keyName === 'q') {
-                camera.rotation.x += 0.5;
-            } else if (keyName === 'e') {
-                camera.rotation.x -= 0.5;
+                mainCharacter.moveDown();
+            } else if (keyName === 'a') {
+                mainCharacter.moveLeft();
+            } else if (keyName === 'd') {
+                mainCharacter.moveRight();
             }
             
+        }
+
+        const onReleaseKeyboard = (event) => {
+            var keyName = event.key;
+            //console.log(keyName);
+            if (keyName === 'w') {
+                mainCharacter.unMoveUp();
+            } else if (keyName === 's') {
+                mainCharacter.unMoveDown();
+            } else if (keyName === 'a') {
+                mainCharacter.unMoveLeft();
+            } else if (keyName === 'd') {
+                mainCharacter.unMoveRight();
+            }
+        }
+
+        const onPressKeyboard = (event) => {
+            var keyName = event.key;
+            if (keyName === ' ') {
+                mainCharacter.jumpUp();
+            }
         }
 
         //main prog
         InitScene(); 
         InitRenderer();
         LoadModels();
-        document.addEventListener('keydown',onDocumentKeyboard,false);
+        document.addEventListener('keydown',onPushKeyboard,false);
+        document.addEventListener('keyup',onReleaseKeyboard,false);
+        document.addEventListener('keypress',onPressKeyboard,false);
         animate();
 
         return () => {

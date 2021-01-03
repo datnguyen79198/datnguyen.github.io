@@ -5,7 +5,7 @@ const UNITS = [
         animation : 'PaperboxGuy_Run',
         rotation : null,
         specific : null,
-        entity_type : 'Steering',
+        entity_type : 'Main_character',
         scale : 0.3
     }, 
     {
@@ -38,7 +38,7 @@ const UNITS = [
         position : { x: -8, y: -5.8, z: -4.9},
         animation : null,
         rotation : null,
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.4
     },
     {
@@ -46,7 +46,7 @@ const UNITS = [
         position : { x: 6, y: -5.8, z: 3},
         animation : null,
         rotation : null,
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.4
     },
     {
@@ -54,7 +54,7 @@ const UNITS = [
         position : { x: 9, y: -5.8, z: 0},
         animation : null,
         rotation : null,
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.4
     },
     {
@@ -62,7 +62,7 @@ const UNITS = [
         position : { x: -3, y: -5.8, z: 3},
         animation : null,
         rotation : null,
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.4
     },
     {
@@ -94,7 +94,7 @@ const UNITS = [
         position : { x: 8, y: 0, z: 1},
         animation : null,
         rotation : {x:0, y:Math.PI/2 + 0.35, z: 0},
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.4
     },
     {
@@ -102,7 +102,7 @@ const UNITS = [
         position : { x: 8.5, y: -0.4, z: 5.6},
         animation : null,
         rotation : {x:0, y:Math.PI/2, z: 0},
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.7
     },
     {
@@ -110,7 +110,7 @@ const UNITS = [
         position : { x: 0.5, y: 0, z: 3.5},
         animation : null,
         rotation : null,
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.1
     },
     {
@@ -180,7 +180,7 @@ for (let i=0;i<8;i++) {
         position : { x: -9.5, y: 0, z: 9.5 - i * 1.1},
         animation : null,
         rotation : null,
-        entity_type : null,
+        entity_type : 'Obstacle',
         scale : 0.07
     });
     UNITS.push({
