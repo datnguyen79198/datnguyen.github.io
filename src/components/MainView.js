@@ -7,6 +7,7 @@ import { UNITS } from '../configures/units';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
 import { SteeringEntity } from '../components/SteeringEntity';
 import { Entity } from '../components/Entity';
+import { Character } from '../components/Character';
 
 const MainView = (src) => {
     useEffect(() => {
@@ -15,6 +16,7 @@ const MainView = (src) => {
         var mixers = [];
         var Obstacles = [], SteeringEntities = [], mainCharacter;
         var hasBeen = {};
+        var boundingGround;
 
         const InitScene = () => {
             //worldScene
@@ -24,8 +26,9 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 2, 13);
+            camera.position.set(0, 13, 13);
             //camera.lookAt(10,1,3);
+            camera.lookAt(worldScene.position);
 
             //light 
             const HemisphereLight = new THREE.HemisphereLight( 0xFFF6DD, 0x05050C, 1.1 );
@@ -85,6 +88,8 @@ const MainView = (src) => {
             groundMesh.receiveShadow = true;
             worldScene.add(groundMesh);
 
+            boundingGround = new THREE.Box3(new THREE.Vector3(-8,0,-1), new THREE.Vector3(8,0,8));
+
             //text
             var loader = new THREE.FontLoader();
             for (let i=0; i<TEXTS_INTRO.length; i++) {
@@ -103,14 +108,14 @@ const MainView = (src) => {
 
                     let textMat = new THREE.MeshPhongMaterial({ color: 0xF0E1D1 });
                     let textMesh = new THREE.Mesh(textGeo, textMat);
-                    textMesh.position.set(TEXTS_INTRO[i].position.x,TEXTS_INTRO[i].position.y,TEXTS_INTRO[i].position.z);
+                    var textEntity = new Entity(textMesh,0);
+                    textEntity.position.set(TEXTS_INTRO[i].position.x,TEXTS_INTRO[i].position.y,TEXTS_INTRO[i].position.z);
                     if (TEXTS_INTRO[i].rotation) {
-                        textMesh.rotation.set(TEXTS_INTRO[i].rotation.x,TEXTS_INTRO[i].rotation.y,TEXTS_INTRO[i].rotation.z);
+                        textEntity.rotation.set(TEXTS_INTRO[i].rotation.x,TEXTS_INTRO[i].rotation.y,TEXTS_INTRO[i].rotation.z);
                     }
-                    textMesh.castShadow = true;
-                    textMesh.receiveShadow = true;
+                    textEntity.castShadow = true;
+                    textEntity.receiveShadow = true;
 
-                    var textEntity = new Entity(textMesh);
                     Obstacles.push(textEntity);
                     worldScene.add(textEntity);
                 });
@@ -129,14 +134,15 @@ const MainView = (src) => {
 
                     let textMat = new THREE.MeshPhongMaterial({ color: 0x5F1515 });
                     let textMesh = new THREE.Mesh(textGeo, textMat);
-                    textMesh.position.set(TEXTS_AWARD[i].position.x,TEXTS_AWARD[i].position.y,TEXTS_AWARD[i].position.z);
-                    if (TEXTS_AWARD[i].rotation) {
-                        textMesh.rotation.set(TEXTS_AWARD[i].rotation.x,TEXTS_AWARD[i].rotation.y,TEXTS_AWARD[i].rotation.z);
-                    }
-                    textMesh.castShadow = true;
-                    textMesh.receiveShadow = true;
 
-                    var textEntity = new Entity(textMesh);
+                    var textEntity = new Entity(textMesh,0);
+                    textEntity.position.set(TEXTS_AWARD[i].position.x,TEXTS_AWARD[i].position.y,TEXTS_AWARD[i].position.z);
+                    if (TEXTS_AWARD[i].rotation) {
+                        textEntity.rotation.set(TEXTS_AWARD[i].rotation.x,TEXTS_AWARD[i].rotation.y,TEXTS_AWARD[i].rotation.z);
+                    }
+                    textEntity.castShadow = true;
+                    textEntity.receiveShadow = true;
+
                     Obstacles.push(textEntity);
                     worldScene.add(textEntity);
                 });
@@ -210,39 +216,55 @@ const MainView = (src) => {
 
                     const modelAnimations = model.animations;
 
-                    if (unit.position) {
-                        unitScene.position.set(unit.position.x, unit.position.y, unit.position.z);
-                    }
-
-                    if (unit.scale) {
-                        unitScene.scale.set(unit.scale, unit.scale, unit.scale);
-                    }
-
-                    if (unit.rotation) {
-                        unitScene.rotation.set(unit.rotation.x, unit.rotation.y, unit.rotation.z)
-                    }
-
-                    if (unit.animation) {
-                        const mixer = StartAnimation(unitScene, modelAnimations, unit.animation);
-                        mixers.push(mixer);
-                    }
-                    
                     var unitEntity;
+                    var type;
                     if (unit.entity_type === 'Steering' || unit.entity_type === 'Main_character') {
-                        unitEntity = new SteeringEntity(unitScene);
                         if (unit.entity_type === 'Steering') {
-                            SteeringEntities.push(unitEntity);
+                            unitEntity = new SteeringEntity(unitScene,unit.name,unit.maxSpeed,
+                                                            unit.wanderDistance,unit.wanderAngle,
+                                                            unit.wanderRadius,unit.wanderRange);
+                            type = 0;
                         } else {
-                            mainCharacter = unitEntity;
+                            unitEntity = new Character(unitScene,unit.maxSpeed);
+                            type = 1;
                         }
                     } 
                     else if (unit.entity_type === 'Obstacle') {
-                        unitEntity = new Entity(unitScene);
-                        Obstacles.push(unitEntity);
+                        unitEntity = new Entity(unitScene,0);
+                        type = 2;
                     } 
                     else {
                         unitEntity = unitScene;
+                        type = 3;
                     }
+
+                    if (unit.position) {
+                        unitEntity.position.set(unit.position.x, unit.position.y, unit.position.z);
+                    }
+
+                    if (unit.scale) {
+                        unitEntity.scale.set(unit.scale, unit.scale, unit.scale);
+                    }
+
+                    if (unit.rotation) {
+                        unitEntity.rotation.set(unit.rotation.x, unit.rotation.y, unit.rotation.z)
+                    }
+
+                    if (unit.animation) {
+                        const mixer = StartAnimation(unitEntity, modelAnimations, unit.animation);
+                        mixers.push(mixer);
+                    }
+
+                    if (type === 0) {
+                        SteeringEntities.push(unitEntity);
+                    } 
+                    else if (type === 1) {
+                        mainCharacter = unitEntity;
+                    }
+                    else if (type === 2) {
+                        Obstacles.push(unitEntity);
+                    }
+                    
                     worldScene.add(unitEntity);
 
                 } else {
@@ -289,7 +311,18 @@ const MainView = (src) => {
 
         const gameLogic = () => {
             if (mainCharacter) {
+                mainCharacter.lookWhereGoing();
                 mainCharacter.update();
+            }
+
+            for (let i=0;i<SteeringEntities.length;i++) {
+                var steeringObj = SteeringEntities[i];
+                steeringObj.wander(boundingGround);
+                if (steeringObj.name === 'cat') {
+                    steeringObj.lookWhereGoing();
+                }
+                steeringObj.bounce(boundingGround);
+                steeringObj.update();
             }
         }
 

@@ -2,10 +2,11 @@ const UNITS = [
     {
         name : 'boxman',
         position : { x: 0.5, y: 0, z: 9.5 },
-        animation : 'PaperboxGuy_Run',
+        animation : 'PaperboxGuy_Walk',
         rotation : null,
         specific : null,
         entity_type : 'Main_character',
+        maxSpeed : 0.03,
         scale : 0.3
     }, 
     {
@@ -67,26 +68,41 @@ const UNITS = [
     },
     {
         name : 'cloud',
-        position : { x: 0, y: 10, z: 0},
+        position : { x: -4, y: 10, z: 0},
         animation : null,
         rotation : null,
         entity_type : 'Steering',
+        maxSpeed : 0.01,
+        wanderDistance : 0.2,
+        wanderAngle: 0.4,
+        wanderRadius: 0.02,
+        wanderRange: 0.4,
         scale : 0.03
     },
     {
         name : 'cloud',
-        position : { x: 0, y: 10, z: 2},
+        position : { x: -7, y: 10, z: -7},
         animation : null,
         rotation : null,
         entity_type : 'Steering',
+        maxSpeed : 0.01,
+        wanderDistance : 0.2,
+        wanderAngle: 0.4,
+        wanderRadius: 0.02,
+        wanderRange: 0.4,
         scale : 0.03
     },
     {
         name : 'cloud',
-        position : { x: -5, y: 10, z: -3},
+        position : { x: -5, y: 10, z: -1},
         animation : null,
         rotation : null,
         entity_type : 'Steering',
+        maxSpeed : 0.01,
+        wanderDistance : 0.2,
+        wanderAngle: 0.4,
+        wanderRadius: 0.02,
+        wanderRange: 0.4,
         scale : 0.03
     },
     {
@@ -115,11 +131,16 @@ const UNITS = [
     },
     {
         name : 'cat',
-        position : { x: 5, y: 0.4, z: 3},
+        position : { x: 5, y: 0.25, z: 3},
         animation : "ArmatureAction",
-        rotation : null,
+        rotation : {x:0, y:Math.PI/2, z: 0},
         entity_type : 'Steering',
-        scale : 0.4
+        maxSpeed : 0.01,
+        wanderDistance : 0.2,
+        wanderAngle: 0.7,
+        wanderRadius: 0.02,
+        wanderRange: 0.3,
+        scale : 0.3
     }
 ];
 

@@ -3,62 +3,67 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 
 export class SteeringEntity extends Entity {
-    constructor(mesh) {
-        super(mesh);
+    constructor(mesh,name,maxSpeed,wanderDistance,wanderAngle,wanderRadius,wanderRange) {
+        super(mesh,maxSpeed);
+        this.name = name;
         this.maxForce = 1;
-        this.maxHigh = 0.3;
         this.avoidDistance = 10;
         this.steeringForce = new THREE.Vector3(0,0,0);
+
+        this.wanderDistance = wanderDistance;
+        this.wanderAngle = wanderAngle;
+        this.wanderRadius = wanderRadius;
+        this.wanderRange = wanderRange;
     }
 
-    moveUp() {
-        this.steeringForce.setZ(0);
-        this.velocity.setZ(0);
-        this.steeringForce.add(new THREE.Vector3(0,0,-this.maxSpeed/2));
-    }
-    moveDown() {
-        this.steeringForce.setZ(0);
-        this.velocity.setZ(0);
-        this.steeringForce.add(new THREE.Vector3(0,0,this.maxSpeed/2));
-    }
-    moveRight() {
-        this.steeringForce.setX(0);
-        this.velocity.setX(0);
-        this.steeringForce.add(new THREE.Vector3(this.maxSpeed/2,0,0));
-        
-    }
-    moveLeft() {
-        this.steeringForce.setX(0);
-        this.velocity.setX(0);
-        this.steeringForce.add(new THREE.Vector3(-this.maxSpeed/2,0,0));
-    }
-    jumpUp() {
-        this.steeringForce.add(new THREE.Vector3(0,this.maxHigh/5,0));
-    }
-    unMoveUp() {
-        this.steeringForce.setZ(0);
-        this.velocity.setZ(0);
-    }
-    unMoveDown() {
-        this.steeringForce.setZ(0);
-        this.velocity.setZ(0);
-    }
-    unMoveRight() {
-        this.steeringForce.setX(0);
-        this.velocity.setX(0);
-    }
-    unMoveLeft() {
-        this.steeringForce.setX(0);
-        this.velocity.setX(0);
-    }
-    gravityPullDown() {
-        if (this.position.y >= this.maxHigh) {
-            this.steeringForce.sub(new THREE.Vector3(0,this.mass * this.gravity,0));
+    bounce(box) {
+        if (this.position.x > box.max.x) {
+            this.position.setX(box.max.x);
+            this.velocity.angle = this.velocity.angle + Math.PI;
+        }
+
+        if (this.position.x < box.min.x) {
+            this.position.setX(box.min.x);
+            this.velocity.angle = this.velocity.angle + Math.PI;
+        }
+
+        if (this.position.z > box.max.z) {
+            this.position.setZ(box.max.z);
+            this.velocity.angle = this.velocity.angle + Math.PI;
+        }
+        if (this.position.z < box.min.z) {
+            this.position.setZ(box.min.z);
+            this.velocity.angle = this.velocity.angle + Math.PI;
         }
     }
 
+    turnAround(box) {
+        if (this.position.x > box.max.x-1 
+            || this.position.x < box.min.x+1 
+            || this.position.z > box.max.z-1
+            || this.position.z < box.min.z+1) {
+            return this.wanderAngle +this.wanderRange;
+        }
+
+        return this.wanderAngle + (Math.random() - 0.5) * this.wanderRange;
+    }
+
+    wander(box) {
+        var nextP = this.velocity.clone().normalize().setLength(this.wanderDistance);
+        var offset = new THREE.Vector3(1,1,1);
+        offset.setLength(this.wanderRadius);
+        offset.x = Math.sin(this.wanderAngle) * offset.length();
+        offset.y = Math.sin(this.wanderAngle) * offset.length();
+        offset.z = Math.cos(this.wanderAngle) * offset.length();
+
+        this.wanderAngle = this.turnAround(box);
+        console.log(this.wanderAngle);
+        nextP.add(offset);
+        nextP.setY(0);
+        this.steeringForce.add(nextP);
+    }
+
     update() {
-        this.gravityPullDown();
         this.steeringForce.clampLength(0,this.maxForce);
         this.steeringForce.divideScalar(this.mass);
         this.velocity.add(this.steeringForce);
