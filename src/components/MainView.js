@@ -226,7 +226,7 @@ const MainView = (src) => {
                                                             unit.wanderRadius,unit.wanderRange,0);
                             type = 0;
                         } else {
-                            unitEntity = new Character(unitScene,unit.maxSpeed,0);
+                            unitEntity = new Character(unitScene,unit.maxSpeed,unit.boundingRadius);
                             type = 1;
                         }
                     } 
@@ -321,6 +321,8 @@ const MainView = (src) => {
                 steeringObj.wander(boundingGround);
                 if (steeringObj.name === 'cat') {
                     steeringObj.avoid(Obstacles);
+                    steeringObj.avoid(mainCharacter);
+                    steeringObj.evade(mainCharacter);
                     steeringObj.lookWhereGoing();
                     steeringObj.bounce(boundingGround);
                 }

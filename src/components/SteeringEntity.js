@@ -42,7 +42,8 @@ export class SteeringEntity extends Entity {
             || this.position.x < box.min.x+1 
             || this.position.z > box.max.z-1
             || this.position.z < box.min.z+1) {
-            return this.wanderAngle +this.wanderRange;
+                let chance = (Math.random() - 0.5 > 0) ? 1 : -1;
+                return this.wanderAngle + chance * this.wanderRange;
         }
 
         return this.wanderAngle + (Math.random() - 0.5) * this.wanderRange;
@@ -80,6 +81,18 @@ export class SteeringEntity extends Entity {
             avoidance = ahead.clone().sub(mostThreaten.position).normalize().multiplyScalar(1);
         }
         this.steeringForce.add(avoidance);
+    }
+
+    flee(position) {
+        var desiredVelocity = position.clone().sub(this.position);
+        desiredVelocity.normalize().setLength(this.maxSpeed).sub(this.velocity);
+        this.steeringForce.sub(desiredVelocity);
+    }
+
+    evade(target) {
+        var lookAheadTime = this.position.distanceTo(target.position) / this.maxSpeed;
+        var predictedTarget = target.position.clone().sub(target.velocity.clone().setLength(lookAheadTime));
+        this.flee(predictedTarget);
     }
 
     update() {

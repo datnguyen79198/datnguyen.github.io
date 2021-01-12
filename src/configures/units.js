@@ -7,6 +7,7 @@ const UNITS = [
         specific : null,
         entity_type : 'Main_character',
         maxSpeed : 0.03,
+        boundingRadius : 1,
         scale : 0.3
     }, 
     {
