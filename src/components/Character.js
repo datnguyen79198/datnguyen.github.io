@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 
 export class Character extends Entity {
-    constructor(mesh,maxSpeed) {
-        super(mesh,maxSpeed);
+    constructor(mesh,maxSpeed,boundingRadius) {
+        super(mesh,maxSpeed,boundingRadius);
         this.maxForce = 1;
         this.maxHigh = 0.3;
         this.avoidDistance = 10;

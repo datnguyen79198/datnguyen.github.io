@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 
 export class SteeringEntity extends Entity {
-    constructor(mesh,name,maxSpeed,wanderDistance,wanderAngle,wanderRadius,wanderRange) {
-        super(mesh,maxSpeed);
+    constructor(mesh,name,maxSpeed,wanderDistance,wanderAngle,wanderRadius,wanderRange,boundingRadius) {
+        super(mesh,maxSpeed,boundingRadius);
         this.name = name;
         this.maxForce = 1;
-        this.avoidDistance = 10;
+        this.avoidDistance = 0.5;
         this.steeringForce = new THREE.Vector3(0,0,0);
 
         this.wanderDistance = wanderDistance;
@@ -61,6 +61,25 @@ export class SteeringEntity extends Entity {
         nextP.add(offset);
         nextP.setY(0);
         this.steeringForce.add(nextP);
+    }
+
+    avoid(obstacles) {
+        var mostThreaten = null;
+        var ahead = this.position.clone().add(this.velocity.clone().normalize().multiplyScalar(this.avoidDistance));
+        for (let i = 0; i<obstacles.length;i++) {
+            let obs = obstacles[i];
+            if (obs===null) continue;
+            var collision = (obs.position.distanceTo(ahead) <= obs.boundingRadius);
+
+            if (collision && (mostThreaten===null || this.position.distanceTo(obs) < this.position.distanceTo(mostThreaten.position))) {
+                mostThreaten = obs;
+            }
+        }
+        var avoidance = new THREE.Vector3(0, 0, 0)
+        if (mostThreaten != null) {
+            avoidance = ahead.clone().sub(mostThreaten.position).normalize().multiplyScalar(1);
+        }
+        this.steeringForce.add(avoidance);
     }
 
     update() {

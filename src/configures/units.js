@@ -40,6 +40,7 @@ const UNITS = [
         animation : null,
         rotation : null,
         entity_type : 'Obstacle',
+        boundingRadius : 0.8,
         scale : 0.4
     },
     {
@@ -48,6 +49,7 @@ const UNITS = [
         animation : null,
         rotation : null,
         entity_type : 'Obstacle',
+        boundingRadius : 0.8,
         scale : 0.4
     },
     {
@@ -56,6 +58,7 @@ const UNITS = [
         animation : null,
         rotation : null,
         entity_type : 'Obstacle',
+        boundingRadius : 0.8,
         scale : 0.4
     },
     {
@@ -64,6 +67,7 @@ const UNITS = [
         animation : null,
         rotation : null,
         entity_type : 'Obstacle',
+        boundingRadius : 0.8,
         scale : 0.4
     },
     {
@@ -111,6 +115,7 @@ const UNITS = [
         animation : null,
         rotation : {x:0, y:Math.PI/2 + 0.35, z: 0},
         entity_type : 'Obstacle',
+        boundingRadius : 2,
         scale : 0.4
     },
     {
@@ -119,6 +124,7 @@ const UNITS = [
         animation : null,
         rotation : {x:0, y:Math.PI/2, z: 0},
         entity_type : 'Obstacle',
+        boundingRadius : 1,
         scale : 0.7
     },
     {
@@ -127,11 +133,12 @@ const UNITS = [
         animation : null,
         rotation : null,
         entity_type : 'Obstacle',
+        boundingRadius : 1,
         scale : 0.1
     },
     {
         name : 'cat',
-        position : { x: 5, y: 0.25, z: 3},
+        position : { x: -3, y: 0.25, z: 4},
         animation : "ArmatureAction",
         rotation : {x:0, y:Math.PI/2, z: 0},
         entity_type : 'Steering',

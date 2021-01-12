@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 
 export class Entity extends THREE.Group {
-    constructor (mesh,maxSpeed) {
+    constructor (mesh,maxSpeed,boundingRadius) {
         super();
         this.mesh = mesh;
         this.mass = 1;
         this.maxSpeed = maxSpeed;
         this.gravity = 0.01;
-        this.boundingRadius = 0;
+        this.boundingRadius = boundingRadius;
         this.velocity = new THREE.Vector3(0,0,0);
         this.vSamples = [];
         this.numSamples = 20;

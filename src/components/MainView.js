@@ -16,7 +16,7 @@ const MainView = (src) => {
         var mixers = [];
         var Obstacles = [], SteeringEntities = [], mainCharacter;
         var hasBeen = {};
-        var boundingGround;
+        var boundingGround,boundingSky;
 
         const InitScene = () => {
             //worldScene
@@ -26,7 +26,7 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 13, 13);
+            camera.position.set(0, 15, 13);
             //camera.lookAt(10,1,3);
             camera.lookAt(worldScene.position);
 
@@ -88,7 +88,8 @@ const MainView = (src) => {
             groundMesh.receiveShadow = true;
             worldScene.add(groundMesh);
 
-            boundingGround = new THREE.Box3(new THREE.Vector3(-8,0,-1), new THREE.Vector3(8,0,8));
+            boundingGround = new THREE.Box3(new THREE.Vector3(-8.5,0,-1), new THREE.Vector3(8.5,0,8.5));
+            boundingSky = new THREE.Box3(new THREE.Vector3(-10,0,-5), new THREE.Vector3(3,0,3));
 
             //text
             var loader = new THREE.FontLoader();
@@ -108,7 +109,7 @@ const MainView = (src) => {
 
                     let textMat = new THREE.MeshPhongMaterial({ color: 0xF0E1D1 });
                     let textMesh = new THREE.Mesh(textGeo, textMat);
-                    var textEntity = new Entity(textMesh,0);
+                    var textEntity = new Entity(textMesh,0,1);
                     textEntity.position.set(TEXTS_INTRO[i].position.x,TEXTS_INTRO[i].position.y,TEXTS_INTRO[i].position.z);
                     if (TEXTS_INTRO[i].rotation) {
                         textEntity.rotation.set(TEXTS_INTRO[i].rotation.x,TEXTS_INTRO[i].rotation.y,TEXTS_INTRO[i].rotation.z);
@@ -135,7 +136,7 @@ const MainView = (src) => {
                     let textMat = new THREE.MeshPhongMaterial({ color: 0x5F1515 });
                     let textMesh = new THREE.Mesh(textGeo, textMat);
 
-                    var textEntity = new Entity(textMesh,0);
+                    var textEntity = new Entity(textMesh,0,1);
                     textEntity.position.set(TEXTS_AWARD[i].position.x,TEXTS_AWARD[i].position.y,TEXTS_AWARD[i].position.z);
                     if (TEXTS_AWARD[i].rotation) {
                         textEntity.rotation.set(TEXTS_AWARD[i].rotation.x,TEXTS_AWARD[i].rotation.y,TEXTS_AWARD[i].rotation.z);
@@ -222,15 +223,15 @@ const MainView = (src) => {
                         if (unit.entity_type === 'Steering') {
                             unitEntity = new SteeringEntity(unitScene,unit.name,unit.maxSpeed,
                                                             unit.wanderDistance,unit.wanderAngle,
-                                                            unit.wanderRadius,unit.wanderRange);
+                                                            unit.wanderRadius,unit.wanderRange,0);
                             type = 0;
                         } else {
-                            unitEntity = new Character(unitScene,unit.maxSpeed);
+                            unitEntity = new Character(unitScene,unit.maxSpeed,0);
                             type = 1;
                         }
                     } 
                     else if (unit.entity_type === 'Obstacle') {
-                        unitEntity = new Entity(unitScene,0);
+                        unitEntity = new Entity(unitScene,0,unit.boundingRadius);
                         type = 2;
                     } 
                     else {
@@ -319,9 +320,14 @@ const MainView = (src) => {
                 var steeringObj = SteeringEntities[i];
                 steeringObj.wander(boundingGround);
                 if (steeringObj.name === 'cat') {
+                    steeringObj.avoid(Obstacles);
                     steeringObj.lookWhereGoing();
+                    steeringObj.bounce(boundingGround);
                 }
-                steeringObj.bounce(boundingGround);
+                
+                if (steeringObj.name === 'cloud') {
+                    steeringObj.bounce(boundingSky);
+                }
                 steeringObj.update();
             }
         }
