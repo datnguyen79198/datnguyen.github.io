@@ -58,7 +58,6 @@ export class SteeringEntity extends Entity {
         offset.z = Math.cos(this.wanderAngle) * offset.length();
 
         this.wanderAngle = this.turnAround(box);
-        console.log(this.wanderAngle);
         nextP.add(offset);
         nextP.setY(0);
         this.steeringForce.add(nextP);

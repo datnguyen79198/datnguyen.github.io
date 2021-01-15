@@ -7,7 +7,7 @@ export const MODELS = [
     },
     {
         name : 'water',
-        url : './asserts/diving_scene/scene.gltf',
+        url : './asserts/diving_scene/diving_scene.glb',
         castShadow : true,
         receiveShadow : true
     },
@@ -92,6 +92,24 @@ export const MODELS = [
     {
         name : 'cat',
         url : './asserts/cat_walk/scene.gltf',
+        castShadow : true,
+        receiveShadow : true
+    },
+    {
+        name : 'fish_0',
+        url : './asserts/fish_0/scene.gltf',
+        castShadow : true,
+        receiveShadow : true
+    },
+    {
+        name : 'fish_1',
+        url : './asserts/fish_1/scene.gltf',
+        castShadow : true,
+        receiveShadow : true
+    },
+    {
+        name : 'fish_2',
+        url : './asserts/fish_2/scene.gltf',
         castShadow : true,
         receiveShadow : true
     }

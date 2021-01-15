@@ -9,6 +9,8 @@ import { SteeringEntity } from '../components/SteeringEntity';
 import { Entity } from '../components/Entity';
 import { Character } from '../components/Character';
 
+import { GLTFClone,SceneClone } from '../ultis/CloneMethods';
+
 const MainView = (src) => {
     useEffect(() => {
         var worldScene,camera,renderer,clock;
@@ -26,7 +28,7 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 15, 13);
+            camera.position.set(0, 13, 9);
             //camera.lookAt(10,1,3);
             camera.lookAt(worldScene.position);
 
@@ -197,25 +199,8 @@ const MainView = (src) => {
                 const model = GetModelByName(unit.name);
 
                 if (model) {
-                    var unitScene;
-                    if (unit.specific) {
-                        model.scene.traverse((obj) => {
-                            if (obj.isMesh) {
-                                if (obj.name[0] === unit.specific) {
-                                    unitScene = obj;
-                                }
-                            }
-                        })
-                    } else { /* Need clone deeper if wanna clone animated mesh */
-                        if (hasBeen[model.name]) {
-                            unitScene = model.scene.clone();
-                        } else {
-                            unitScene = model.scene;
-                            hasBeen[model.name] = true;
-                        }
-                    }
-
-                    const modelAnimations = model.animations;
+                    var unitScene = SceneClone( model.gltf.scene );
+                    const modelAnimations = model.gltf.animations;
 
                     var unitEntity;
                     var type;
@@ -252,8 +237,11 @@ const MainView = (src) => {
                     }
 
                     if (unit.animation) {
-                        const mixer = StartAnimation(unitEntity, modelAnimations, unit.animation);
-                        mixers.push(mixer);
+                        for (let i=0;i<unit.animation.length;i++) {
+                            let animate = unit.animation[i];
+                            const mixer = StartAnimation(unitEntity, modelAnimations, animate);
+                            mixers.push(mixer);
+                        }
                     }
 
                     if (type === 0) {
@@ -283,14 +271,15 @@ const MainView = (src) => {
 
                 gltf.scene.traverse((obj) => {
                     if (obj.isMesh) {
+                        //if (model.name === 'water') console.log(obj.name);
                         obj.castShadow = model.castShadow;
                         obj.receiveShadow = model.receiveShadow;
                     }
                 })
 
-                model.scene = gltf.scene;
-                model.animations = gltf.animations;
-                if (model.name === 'cat' | model.name==='cutie') console.log(model.animations);
+                model.gltf = GLTFClone(gltf);
+
+                //if (model.name === 'fish_0') console.log(model.animations);
 
                 onLoad();
             })

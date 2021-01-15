@@ -2,7 +2,7 @@ const UNITS = [
     {
         name : 'boxman',
         position : { x: 0.5, y: 0, z: 9.5 },
-        animation : 'PaperboxGuy_Walk',
+        animation : ['PaperboxGuy_Walk'],
         rotation : null,
         specific : null,
         entity_type : 'Main_character',
@@ -13,7 +13,7 @@ const UNITS = [
     {
         name : 'fishingman',
         position : { x: -6, y: -0.8, z: -4.7 },
-        animation : 'Take 001',
+        animation : ['Take 001'],
         rotation : {x:0, y:Math.PI, z: 0},
         specific : null,
         entity_type : null,
@@ -22,7 +22,7 @@ const UNITS = [
     {
         name : 'water',
         position : { x: -0.3, y: 0, z: -11},
-        animation : null,
+        animation : ['Mesh_6Action','Mesh_8Action'],
         rotation : {x:0, y:-Math.PI/2, z: 0},
         entity_type : null,
         scale : 0.55
@@ -140,7 +140,7 @@ const UNITS = [
     {
         name : 'cat',
         position : { x: -3, y: 0.25, z: 4},
-        animation : "ArmatureAction",
+        animation : ["ArmatureAction"],
         rotation : {x:0, y:Math.PI/2, z: 0},
         entity_type : 'Steering',
         maxSpeed : 0.01,
@@ -203,6 +203,10 @@ const award = [
     }
 ];
 
+const randomInt = (max) => {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
 for (let i=0;i<8;i++) {
     UNITS.push({
         name : 'pedestal',
@@ -210,6 +214,7 @@ for (let i=0;i<8;i++) {
         animation : null,
         rotation : null,
         entity_type : 'Obstacle',
+        boundingRadius : 0.5,
         scale : 0.07
     });
     UNITS.push({
@@ -219,6 +224,21 @@ for (let i=0;i<8;i++) {
         rotation : award[i].rotation,
         entity_type : null,
         scale : award[i].scale
+    });
+}
+
+const size = [0.07,0.005,0.1]
+const animate = ['ArmatureAction','Take 001','ArmatureAction'];
+
+for (let i=0;i<3;i++) {
+    var id = 1;
+    UNITS.push({
+        name : 'fish_'+String(id),
+        position : { x: 0 + i * 0.5, y: 1, z: 0 + i*0.5},
+        animation : [animate[id]],
+        rotation : null,
+        entity_type : 'Obstacle',
+        scale : size[id]
     });
 }
 
