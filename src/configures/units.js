@@ -86,7 +86,7 @@ const UNITS = [
     },
     {
         name : 'cloud',
-        position : { x: -7, y: 10, z: -7},
+        position : { x: -7, y: 10, z: 0},
         animation : null,
         rotation : null,
         entity_type : 'Steering',
@@ -230,15 +230,20 @@ for (let i=0;i<8;i++) {
 const size = [0.07,0.005,0.1]
 const animate = ['ArmatureAction','Take 001','ArmatureAction'];
 
-for (let i=0;i<3;i++) {
-    var id = 1;
+for (let i=0;i<15;i++) {
+    var id = randomInt(3);
     UNITS.push({
         name : 'fish_'+String(id),
-        position : { x: 0 + i * 0.5, y: 1, z: 0 + i*0.5},
+        position : { x: randomInt(16) - 8, y: -randomInt(7) - 1, z: randomInt(11) - 15},
         animation : [animate[id]],
         rotation : null,
-        entity_type : 'Obstacle',
-        scale : size[id]
+        entity_type : 'Steering',
+        maxSpeed : (randomInt(3)+1)/100,
+        wanderDistance : 0.2,
+        wanderAngle: 0.7,
+        wanderRadius: 0.02,
+        wanderRange: 0.3,
+        scale : size[id] * (randomInt(5)/10+1)
     });
 }
 

@@ -16,9 +16,9 @@ const MainView = (src) => {
         var worldScene,camera,renderer,clock;
         var groundMesh;
         var mixers = [];
-        var Obstacles = [], SteeringEntities = [], mainCharacter;
+        var Obstacles = [], SteeringEntities = [], mainCharacter, fishes = [];
         var hasBeen = {};
-        var boundingGround,boundingSky;
+        var boundingGround,boundingSky,boundingSea;
 
         const InitScene = () => {
             //worldScene
@@ -28,7 +28,7 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 13, 9);
+            camera.position.set(0, 13, 5);
             //camera.lookAt(10,1,3);
             camera.lookAt(worldScene.position);
 
@@ -92,6 +92,7 @@ const MainView = (src) => {
 
             boundingGround = new THREE.Box3(new THREE.Vector3(-8.5,0,-1), new THREE.Vector3(8.5,0,8.5));
             boundingSky = new THREE.Box3(new THREE.Vector3(-10,0,-5), new THREE.Vector3(3,0,3));
+            boundingSea = new THREE.Box3(new THREE.Vector3(-9,0,-15), new THREE.Vector3(9,0,-3));
 
             //text
             var loader = new THREE.FontLoader();
@@ -306,17 +307,30 @@ const MainView = (src) => {
             }
 
             for (let i=0;i<SteeringEntities.length;i++) {
+                var unit = SteeringEntities[i];
+                if (unit.name.includes('fish_')) fishes.push(unit);
+            }
+
+            for (let i=0;i<SteeringEntities.length;i++) {
                 var steeringObj = SteeringEntities[i];
-                steeringObj.wander(boundingGround);
                 if (steeringObj.name === 'cat') {
+                    steeringObj.wander(boundingGround);
                     steeringObj.avoid(Obstacles);
                     steeringObj.avoid(mainCharacter);
                     steeringObj.evade(mainCharacter);
                     steeringObj.lookWhereGoing();
                     steeringObj.bounce(boundingGround);
                 }
+
+                if (steeringObj.name.includes('fish_')) {
+                    steeringObj.wander(boundingSea);
+                    steeringObj.avoid(fishes);
+                    steeringObj.lookWhereGoing();
+                    steeringObj.bounce(boundingSea);
+                }
                 
                 if (steeringObj.name === 'cloud') {
+                    steeringObj.wander(boundingSky);
                     steeringObj.bounce(boundingSky);
                 }
                 steeringObj.update();
