@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import { MODELS } from '../configures/models';
 import { UNITS } from '../configures/units';
+import { LoadingScreen } from '../configures/LoadingScreen';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
 import { SteeringEntity } from '../components/SteeringEntity';
 import { Entity } from '../components/Entity';
@@ -17,8 +18,24 @@ const MainView = (src) => {
         var groundMesh;
         var mixers = [];
         var Obstacles = [], SteeringEntities = [], mainCharacter, fishes = [];
-        var hasBeen = {};
         var boundingGround,boundingSky,boundingSea;
+        var RESOURCES_LOADED;
+        var loadingManager;
+
+        const InitLoadingScene = () => {
+            RESOURCES_LOADED = false;
+            LoadingScreen.scene.background = new THREE.Color(0xFFB62E);
+            LoadingScreen.camera.position.set(0,5,5);
+            LoadingScreen.mesh.position.set(0,0,0);
+            LoadingScreen.camera.lookAt(LoadingScreen.mesh.position);
+            LoadingScreen.scene.add(LoadingScreen.mesh);
+
+            loadingManager = new THREE.LoadingManager();
+
+            loadingManager.onLoad = () => {
+                RESOURCES_LOADED = true;
+            }
+        }
 
         const InitScene = () => {
             //worldScene
@@ -95,7 +112,7 @@ const MainView = (src) => {
             boundingSea = new THREE.Box3(new THREE.Vector3(-9,0,-15), new THREE.Vector3(9,0,-3));
 
             //text
-            var loader = new THREE.FontLoader();
+            var loader = new THREE.FontLoader( loadingManager );
             for (let i=0; i<TEXTS_INTRO.length; i++) {
                 let textGeo;
                 loader.load('./fonts/Sketch_3D_Regular.json', (font) => {
@@ -264,7 +281,7 @@ const MainView = (src) => {
         }
 
         const loadGLTFModel = (model, onLoad) => {
-            const loader = new GLTFLoader();
+            const loader = new GLTFLoader( loadingManager );
             const url_model = model.url;
             //console.log('load model from ' + url_model);
 
@@ -340,7 +357,20 @@ const MainView = (src) => {
         var dt = 1000/60;
         var timetarget = 0;
 
+        const AnimateLoadingScene = () => {
+            requestAnimationFrame(animate);
+            LoadingScreen.mesh.position.x += 0.03;
+            LoadingScreen.mesh.position.y = Math.sin(LoadingScreen.mesh.position.x);
+            renderer.render(LoadingScreen.scene, LoadingScreen.camera);
+        }
+
         const animate = () => {
+
+            if (RESOURCES_LOADED === false) {
+                AnimateLoadingScene();
+                return;
+            }
+
             if (Date.now() >= timetarget) {
 
                 const mixerUpdateDelta = clock.getDelta();
@@ -406,6 +436,7 @@ const MainView = (src) => {
 
         //main prog
         InitScene(); 
+        InitLoadingScene();
         InitRenderer();
         LoadModels();
         document.addEventListener('keydown',onPushKeyboard,false);
