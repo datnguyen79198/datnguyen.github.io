@@ -4,8 +4,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import { MODELS } from '../configures/models';
 import { UNITS } from '../configures/units';
-import { LoadingScreen } from '../configures/LoadingScreen';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
+import { LoadingScreen } from '../configures/LoadingScreen';
+import { StartScreen } from '../configures/StartScreen';
+
 import { SteeringEntity } from '../components/SteeringEntity';
 import { Entity } from '../components/Entity';
 import { Character } from '../components/Character';
@@ -19,17 +21,10 @@ const MainView = (src) => {
         var mixers = [];
         var Obstacles = [], SteeringEntities = [], mainCharacter, fishes = [];
         var boundingGround,boundingSky,boundingSea;
-        var RESOURCES_LOADED;
+        var RESOURCES_LOADED = false, START_RENDERING = false;
         var loadingManager;
 
         const InitLoadingScene = () => {
-            RESOURCES_LOADED = false;
-            LoadingScreen.scene.background = new THREE.Color(0xFFB62E);
-            LoadingScreen.camera.position.set(0,5,5);
-            LoadingScreen.mesh.position.set(0,0,0);
-            LoadingScreen.camera.lookAt(LoadingScreen.mesh.position);
-            LoadingScreen.scene.add(LoadingScreen.mesh);
-
             loadingManager = new THREE.LoadingManager();
 
             loadingManager.onLoad = () => {
@@ -356,15 +351,26 @@ const MainView = (src) => {
 
         var dt = 1000/60;
         var timetarget = 0;
+        var stTime = Date.now();
 
         const AnimateLoadingScene = () => {
             requestAnimationFrame(animate);
-            LoadingScreen.mesh.position.x += 0.03;
-            LoadingScreen.mesh.position.y = Math.sin(LoadingScreen.mesh.position.x);
+            LoadingScreen.mesh.position.x += 0.5;
             renderer.render(LoadingScreen.scene, LoadingScreen.camera);
         }
 
+        const AnimateStartScreen = () => {
+            requestAnimationFrame(animate);
+            if (Date.now() - stTime > 2000) START_RENDERING = true;
+            renderer.render(StartScreen.scene, StartScreen.camera);
+        }
+
         const animate = () => {
+
+            if (START_RENDERING === false) {
+                AnimateStartScreen();
+                return;
+            }
 
             if (RESOURCES_LOADED === false) {
                 AnimateLoadingScene();
@@ -435,14 +441,15 @@ const MainView = (src) => {
         }
 
         //main prog
+
         InitScene(); 
-        InitLoadingScene();
         InitRenderer();
+        InitLoadingScene();
         LoadModels();
+        animate();
         document.addEventListener('keydown',onPushKeyboard,false);
         document.addEventListener('keyup',onReleaseKeyboard,false);
         document.addEventListener('keypress',onPressKeyboard,false);
-        animate();
 
         return () => {
             document.getElementById(src).removeChild(renderer.domElement);
