@@ -24,12 +24,18 @@ const MainView = (src) => {
         var boundingGround,boundingSky,boundingSea;
         var RESOURCES_LOADED = false, START_RENDERING = false;
         var loadingManager,loader;
+        var passingObj = {
+            scene : null,
+            objects : null
+        };
 
         const InitLoadingScene = () => {
             loadingManager = new THREE.LoadingManager();
 
             loadingManager.onLoad = () => {
-                RESOURCES_LOADED = true;
+                setTimeout(() => {  
+                    RESOURCES_LOADED = true; 
+                }, 2000);
             }
         }
 
@@ -41,7 +47,7 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 5, 13);
+            camera.position.set(0, 10, 13);
             //camera.lookAt(10,1,3);
             camera.lookAt(worldScene.position);
 
@@ -99,7 +105,7 @@ const MainView = (src) => {
             */
             //ground 
             const groundGeo = new THREE.PlaneBufferGeometry(20,12);
-            const groundMat = new THREE.MeshPhongMaterial({ color: 0xA55001});
+            const groundMat = new THREE.MeshPhongMaterial({ color: 0x6D3E05});
             groundMesh = new THREE.Mesh(groundGeo,groundMat);
             groundMesh.rotation.x = -Math.PI/2;
             groundMesh.position.z += 4;
@@ -110,13 +116,18 @@ const MainView = (src) => {
             boundingSky = new THREE.Box3(new THREE.Vector3(-10,0,-5), new THREE.Vector3(3,0,3));
             boundingSea = new THREE.Box3(new THREE.Vector3(-9,0,-15), new THREE.Vector3(9,0,-3));
 
+            passingObj = {
+                scene : worldScene,
+                objects : Obstacles
+            }
+
             //text
             for (let i=0; i<TEXTS_INTRO.length; i++) {
-                TextLoader(loader, TEXTS_INTRO[i],'./fonts/Sketch_3D_Regular.json', 0xF0E1D1, Obstacles, worldScene);
+                TextLoader(loader, TEXTS_INTRO[i],'./fonts/Sketch_3D_Regular.json', 0xF0E1D1, passingObj);
             }
 
             for (let i=0; i<TEXTS_AWARD.length; i++) {
-                TextLoader(loader, TEXTS_AWARD[i],'./fonts/Bakso.json', 0xBF0303, Obstacles, worldScene);
+                TextLoader(loader, TEXTS_AWARD[i],'./fonts/Bakso.json', 0xBF0303, passingObj);
             }
 
 
@@ -311,13 +322,12 @@ const MainView = (src) => {
 
         const AnimateLoadingScene = () => {
             requestAnimationFrame(animate);
-            LoadingScreen.mesh.position.x += 0.5;
             renderer.render(LoadingScreen.scene, LoadingScreen.camera);
         }
 
         const AnimateStartScreen = () => {
             requestAnimationFrame(animate);
-            if (Date.now() - stTime > 2000) START_RENDERING = true;
+            //if (Date.now() - stTime > 2000) START_RENDERING = true;
             renderer.render(StartScreen.scene, StartScreen.camera);
         }
 
@@ -326,13 +336,16 @@ const MainView = (src) => {
             if (START_RENDERING === false) {
                 AnimateStartScreen();
                 return;
+            } else {
+                StartScreen.scene.remove.apply(StartScreen.scene, StartScreen.scene.children);
             }
 
             if (RESOURCES_LOADED === false) {
                 AnimateLoadingScene();
                 return;
+            } else {
+                LoadingScreen.scene.remove.apply(LoadingScreen.scene, LoadingScreen.scene.children);
             }
-
             if (Date.now() >= timetarget) {
 
                 const mixerUpdateDelta = clock.getDelta();
@@ -350,7 +363,6 @@ const MainView = (src) => {
                     timetarget = Date.now();
                 }
             }
-
             requestAnimationFrame(animate);
         }
 
@@ -406,7 +418,7 @@ const MainView = (src) => {
         document.addEventListener('keydown',onPushKeyboard,false);
         document.addEventListener('keyup',onReleaseKeyboard,false);
         document.addEventListener('keypress',onPressKeyboard,false);
-
+        //console.log(worldScene.children);
         return () => {
             document.getElementById(src).removeChild(renderer.domElement);
         }

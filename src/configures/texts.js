@@ -268,5 +268,21 @@ const TEXTS_AWARD = [
     }
 ]
 
+const TEXTS_START = [
+    {
+        text : `START`,
+        position : {x: -0.8, y: 0, z: 0},
+        rotation : {x:-Math.PI/2, y:0, z:0},
+        size: 0.3,
+        height: 0.13,
+        curveSegments: 1,
+        bevelEnabled: true,
+        bevelThickness: 0.001,
+        //bevelSize: 0.0001,
+        bevelSize: 0.005,
+        bevelSegments: 1
+    }
+]
 
-export {TEXTS_INTRO , TEXTS_AWARD};
+
+export {TEXTS_INTRO , TEXTS_AWARD, TEXTS_START};
