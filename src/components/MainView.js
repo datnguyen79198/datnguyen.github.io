@@ -41,7 +41,7 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 2, 12);
+            camera.position.set(0, 5, 13);
             //camera.lookAt(10,1,3);
             camera.lookAt(worldScene.position);
 
@@ -68,7 +68,7 @@ const MainView = (src) => {
 
             //loader text
             loader = new THREE.FontLoader( loadingManager );
-
+            /*
             //Oxyz
             const lineMatX = new THREE.LineBasicMaterial({color: 0xFF0000}); //red
             const lineMatY = new THREE.LineBasicMaterial({color: 0xABFF00}); //green
@@ -96,7 +96,7 @@ const MainView = (src) => {
             worldScene.add(Ox);
             worldScene.add(Oy);
             worldScene.add(Oz);
-
+            */
             //ground 
             const groundGeo = new THREE.PlaneBufferGeometry(20,12);
             const groundMat = new THREE.MeshPhongMaterial({ color: 0xA55001});
@@ -112,11 +112,11 @@ const MainView = (src) => {
 
             //text
             for (let i=0; i<TEXTS_INTRO.length; i++) {
-                TextLoader(loader, TEXTS_INTRO[i],'./fonts/Sketch_3D_Regular.json', Obstacles, worldScene);
+                TextLoader(loader, TEXTS_INTRO[i],'./fonts/Sketch_3D_Regular.json', 0xF0E1D1, Obstacles, worldScene);
             }
 
             for (let i=0; i<TEXTS_AWARD.length; i++) {
-                TextLoader(loader, TEXTS_AWARD[i],'./fonts/Bakso.json', Obstacles, worldScene);
+                TextLoader(loader, TEXTS_AWARD[i],'./fonts/Bakso.json', 0xBF0303, Obstacles, worldScene);
             }
 
 

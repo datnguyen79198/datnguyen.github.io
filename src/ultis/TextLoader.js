@@ -2,8 +2,9 @@ import * as THREE from 'three';
 
 import { Entity } from '../components/Entity';
 
-const TextLoader = (loader, textData, fontLink, Obstacles, worldScene) => {
-    let textGeo;
+const TextLoader = (loader, textData, fontLink, color, Obstacles, worldScene) => {
+    var textMat,textGeo,textEntity,textMesh;
+
     loader.load(fontLink, (font) => {
         textGeo = new THREE.TextGeometry(textData.text, {
             font : font,
@@ -15,10 +16,9 @@ const TextLoader = (loader, textData, fontLink, Obstacles, worldScene) => {
             bevelSize: textData.bevelSize,
             bevelSegments: textData.bevelSegments
         })
-
-        let textMat = new THREE.MeshPhongMaterial({ color: 0xF0E1D1 });
-        let textMesh = new THREE.Mesh(textGeo, textMat);
-        var textEntity = new Entity(textMesh,0,1);
+        textMat = new THREE.MeshPhongMaterial({ color: color });
+        textMesh = new THREE.Mesh(textGeo, textMat);
+        textEntity = new Entity(textMesh,0,1);
         textEntity.position.set(textData.position.x,textData.position.y,textData.position.z);
         if (textData.rotation) {
             textEntity.rotation.set(textData.rotation.x,textData.rotation.y,textData.rotation.z);
@@ -26,9 +26,9 @@ const TextLoader = (loader, textData, fontLink, Obstacles, worldScene) => {
         textEntity.castShadow = true;
         textEntity.receiveShadow = true;
 
-        Obstacles.push(textEntity);
-        worldScene.add(textEntity);
-    });        
+        if (Obstacles !== null) Obstacles.push(textEntity); 
+        if (worldScene !== null) worldScene.add(textEntity);
+    });   
 }
 
 export {TextLoader};
