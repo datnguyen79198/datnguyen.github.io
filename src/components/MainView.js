@@ -13,6 +13,7 @@ import { Entity } from '../components/Entity';
 import { Character } from '../components/Character';
 
 import { GLTFClone,SceneClone } from '../ultis/CloneMethods';
+import { TextLoader } from '../ultis/TextLoader';
 
 const MainView = (src) => {
     useEffect(() => {
@@ -32,35 +33,6 @@ const MainView = (src) => {
             }
         }
 
-        const TextLoader = (textData, fontLink) => {
-            let textGeo;
-            loader.load(fontLink, (font) => {
-                textGeo = new THREE.TextGeometry(textData.text, {
-                    font : font,
-                    size: textData.size,
-                    height: textData.height,
-                    curveSegments: textData.curveSegments,
-                    bevelEnabled: textData.bevelEnabled,
-                    bevelThickness: textData.bevelThickness,
-                    bevelSize: textData.bevelSize,
-                    bevelSegments: textData.bevelSegments
-                })
-
-                let textMat = new THREE.MeshPhongMaterial({ color: 0xF0E1D1 });
-                let textMesh = new THREE.Mesh(textGeo, textMat);
-                var textEntity = new Entity(textMesh,0,1);
-                textEntity.position.set(textData.position.x,textData.position.y,textData.position.z);
-                if (textData.rotation) {
-                    textEntity.rotation.set(textData.rotation.x,textData.rotation.y,textData.rotation.z);
-                }
-                textEntity.castShadow = true;
-                textEntity.receiveShadow = true;
-
-                Obstacles.push(textEntity);
-                worldScene.add(textEntity);
-            });        
-        }
-
         const InitScene = () => {
             //worldScene
             worldScene = new THREE.Scene();
@@ -69,7 +41,7 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 5, 15);
+            camera.position.set(0, 2, 12);
             //camera.lookAt(10,1,3);
             camera.lookAt(worldScene.position);
 
@@ -94,7 +66,7 @@ const MainView = (src) => {
             //clock 
             clock = new THREE.Clock()
 
-            //
+            //loader text
             loader = new THREE.FontLoader( loadingManager );
 
             //Oxyz
@@ -140,11 +112,11 @@ const MainView = (src) => {
 
             //text
             for (let i=0; i<TEXTS_INTRO.length; i++) {
-                TextLoader(TEXTS_INTRO[i],'./fonts/Sketch_3D_Regular.json');
+                TextLoader(loader, TEXTS_INTRO[i],'./fonts/Sketch_3D_Regular.json', Obstacles, worldScene);
             }
 
             for (let i=0; i<TEXTS_AWARD.length; i++) {
-                TextLoader(TEXTS_AWARD[i],'./fonts/Bakso.json');
+                TextLoader(loader, TEXTS_AWARD[i],'./fonts/Bakso.json', Obstacles, worldScene);
             }
 
 
