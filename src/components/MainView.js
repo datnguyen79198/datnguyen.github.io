@@ -28,6 +28,7 @@ const MainView = (src) => {
             scene : null,
             objects : null
         };
+        var mouse = new THREE.Vector2();
 
         const InitLoadingScene = () => {
             loadingManager = new THREE.LoadingManager();
@@ -130,9 +131,9 @@ const MainView = (src) => {
                 TextLoader(loader, TEXTS_AWARD[i],'./fonts/Bakso.json', 0xBF0303, passingObj);
             }
 
-
-            //resize event
+            //window events
             window.addEventListener('resize', onWindowResize, false);
+            window.addEventListener('mousemove',onDocumentMouseMove, false);
 
         }
         
@@ -406,6 +407,15 @@ const MainView = (src) => {
             if (keyName === ' ') {
                 mainCharacter.jumpUp();
             }
+        }
+
+        const onDocumentMouseMove = (event) => {
+            event.preventDefault();
+
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1; 
+            
+            console.log(mouse.x + " " + mouse.y);
         }
 
         //main prog

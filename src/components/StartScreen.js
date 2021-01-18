@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { TEXTS_START } from '../configures/texts';
 import { TextLoader } from '../ultis/TextLoader';
 
-var loader,renderer;
+var loader;
 var groundMesh;
 var passingObj = {
     scene : null,
@@ -17,14 +17,6 @@ var StartScreen = {
 
 const InitLoading = () => {
     loader = new THREE.FontLoader();
-}
-
-const InitRenderer = () => {
-    renderer = new THREE.WebGLRenderer({ antialias: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 }
 
 const InitScene = () => {
@@ -90,26 +82,15 @@ const InitScene = () => {
         objects : []
     }
 
-
     for (let i=0; i<TEXTS_START.length; i++) {
         TextLoader(loader, TEXTS_START[i], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
     }
 
-
     StartScreen.camera.position.set(0,2.9,1.7);
     StartScreen.camera.lookAt(StartScreen.scene.position);
-
-    window.addEventListener('resize', onWindowResize, false);
-}
-
-const onWindowResize = () => {
-    StartScreen.camera.aspect = window.innerWidth / window.innerHeight;
-    StartScreen.camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
 InitLoading();
-InitRenderer();
 InitScene();
 
 export {StartScreen};
