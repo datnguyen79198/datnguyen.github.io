@@ -5,8 +5,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MODELS } from '../configures/models';
 import { UNITS } from '../configures/units';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
-import { LoadingScreen } from '../configures/LoadingScreen';
-import { StartScreen } from '../configures/StartScreen';
+import { LoadingScreen } from './LoadingScreen';
+import { StartScreen } from './StartScreen';
 
 import { SteeringEntity } from '../components/SteeringEntity';
 import { Entity } from '../components/Entity';
@@ -22,7 +22,7 @@ const MainView = (src) => {
         var Obstacles = [], SteeringEntities = [], mainCharacter, fishes = [];
         var boundingGround,boundingSky,boundingSea;
         var RESOURCES_LOADED = false, START_RENDERING = false;
-        var loadingManager;
+        var loadingManager,loader;
 
         const InitLoadingScene = () => {
             loadingManager = new THREE.LoadingManager();
@@ -30,6 +30,35 @@ const MainView = (src) => {
             loadingManager.onLoad = () => {
                 RESOURCES_LOADED = true;
             }
+        }
+
+        const TextLoader = (textData, fontLink) => {
+            let textGeo;
+            loader.load(fontLink, (font) => {
+                textGeo = new THREE.TextGeometry(textData.text, {
+                    font : font,
+                    size: textData.size,
+                    height: textData.height,
+                    curveSegments: textData.curveSegments,
+                    bevelEnabled: textData.bevelEnabled,
+                    bevelThickness: textData.bevelThickness,
+                    bevelSize: textData.bevelSize,
+                    bevelSegments: textData.bevelSegments
+                })
+
+                let textMat = new THREE.MeshPhongMaterial({ color: 0xF0E1D1 });
+                let textMesh = new THREE.Mesh(textGeo, textMat);
+                var textEntity = new Entity(textMesh,0,1);
+                textEntity.position.set(textData.position.x,textData.position.y,textData.position.z);
+                if (textData.rotation) {
+                    textEntity.rotation.set(textData.rotation.x,textData.rotation.y,textData.rotation.z);
+                }
+                textEntity.castShadow = true;
+                textEntity.receiveShadow = true;
+
+                Obstacles.push(textEntity);
+                worldScene.add(textEntity);
+            });        
         }
 
         const InitScene = () => {
@@ -40,7 +69,7 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 13, 5);
+            camera.position.set(0, 5, 15);
             //camera.lookAt(10,1,3);
             camera.lookAt(worldScene.position);
 
@@ -64,6 +93,9 @@ const MainView = (src) => {
 
             //clock 
             clock = new THREE.Clock()
+
+            //
+            loader = new THREE.FontLoader( loadingManager );
 
             //Oxyz
             const lineMatX = new THREE.LineBasicMaterial({color: 0xFF0000}); //red
@@ -107,61 +139,12 @@ const MainView = (src) => {
             boundingSea = new THREE.Box3(new THREE.Vector3(-9,0,-15), new THREE.Vector3(9,0,-3));
 
             //text
-            var loader = new THREE.FontLoader( loadingManager );
             for (let i=0; i<TEXTS_INTRO.length; i++) {
-                let textGeo;
-                loader.load('./fonts/Sketch_3D_Regular.json', (font) => {
-                    textGeo = new THREE.TextGeometry(TEXTS_INTRO[i].text, {
-                        font : font,
-                        size: TEXTS_INTRO[i].size,
-                        height: TEXTS_INTRO[i].height,
-                        curveSegments: TEXTS_INTRO[i].curveSegments,
-                        bevelEnabled: TEXTS_INTRO[i].bevelEnabled,
-                        bevelThickness: TEXTS_INTRO[i].bevelThickness,
-                        bevelSize: TEXTS_INTRO[i].bevelSize,
-                        bevelSegments: TEXTS_INTRO[i].bevelSegments
-                    })
-
-                    let textMat = new THREE.MeshPhongMaterial({ color: 0xF0E1D1 });
-                    let textMesh = new THREE.Mesh(textGeo, textMat);
-                    var textEntity = new Entity(textMesh,0,1);
-                    textEntity.position.set(TEXTS_INTRO[i].position.x,TEXTS_INTRO[i].position.y,TEXTS_INTRO[i].position.z);
-                    if (TEXTS_INTRO[i].rotation) {
-                        textEntity.rotation.set(TEXTS_INTRO[i].rotation.x,TEXTS_INTRO[i].rotation.y,TEXTS_INTRO[i].rotation.z);
-                    }
-                    textEntity.castShadow = true;
-                    textEntity.receiveShadow = true;
-
-                    Obstacles.push(textEntity);
-                    worldScene.add(textEntity);
-                });
+                TextLoader(TEXTS_INTRO[i],'./fonts/Sketch_3D_Regular.json');
             }
 
             for (let i=0; i<TEXTS_AWARD.length; i++) {
-                let textGeo;
-                loader.load('./fonts/Bakso.json', (font) => {
-                    textGeo = new THREE.TextGeometry(TEXTS_AWARD[i].text, {
-                        font : font,
-                        size: TEXTS_AWARD[i].size,
-                        height: TEXTS_AWARD[i].height,
-                        curveSegments: TEXTS_AWARD[i].curveSegments,
-                        bevelEnabled: false
-                    })
-
-                    let textMat = new THREE.MeshPhongMaterial({ color: 0x5F1515 });
-                    let textMesh = new THREE.Mesh(textGeo, textMat);
-
-                    var textEntity = new Entity(textMesh,0,1);
-                    textEntity.position.set(TEXTS_AWARD[i].position.x,TEXTS_AWARD[i].position.y,TEXTS_AWARD[i].position.z);
-                    if (TEXTS_AWARD[i].rotation) {
-                        textEntity.rotation.set(TEXTS_AWARD[i].rotation.x,TEXTS_AWARD[i].rotation.y,TEXTS_AWARD[i].rotation.z);
-                    }
-                    textEntity.castShadow = true;
-                    textEntity.receiveShadow = true;
-
-                    Obstacles.push(textEntity);
-                    worldScene.add(textEntity);
-                });
+                TextLoader(TEXTS_AWARD[i],'./fonts/Bakso.json');
             }
 
 
@@ -246,6 +229,7 @@ const MainView = (src) => {
                     }
 
                     if (unit.rotation) {
+                        if (unit.name === 'boxman') console.log(unit.rotation);
                         unitEntity.rotation.set(unit.rotation.x, unit.rotation.y, unit.rotation.z)
                     }
 
@@ -314,7 +298,7 @@ const MainView = (src) => {
 
         const gameLogic = () => {
             if (mainCharacter) {
-                mainCharacter.lookWhereGoing();
+                //mainCharacter.lookWhereGoing();
                 mainCharacter.update();
             }
 

@@ -1,7 +1,7 @@
 export const MODELS = [
     {
         name : 'boxman',
-        url : './asserts/main_character/boxman.glb',
+        url : './asserts/main_character/scene.gltf',
         castShadow : true,
         receiveShadow : true
     },

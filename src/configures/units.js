@@ -2,13 +2,13 @@ const UNITS = [
     {
         name : 'boxman',
         position : { x: 0.5, y: 0, z: 9.5 },
-        animation : ['PaperboxGuy_Walk'],
-        rotation : null,
+        animation : ['idle'],
+        rotation : {x:0, y:-Math.PI/2, z: 0},
         specific : null,
         entity_type : 'Main_character',
         maxSpeed : 0.03,
         boundingRadius : 1,
-        scale : 0.3
+        scale : 2
     }, 
     {
         name : 'fishingman',
