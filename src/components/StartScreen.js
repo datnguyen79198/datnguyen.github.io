@@ -86,7 +86,7 @@ const InitScene = () => {
         TextLoader(loader, TEXTS_START[i], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
     }
 
-    StartScreen.camera.position.set(0,2.9,1.7);
+    StartScreen.camera.position.set(0,2,1.5);
     StartScreen.camera.lookAt(StartScreen.scene.position);
 }
 

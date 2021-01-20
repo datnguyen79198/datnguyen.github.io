@@ -29,9 +29,12 @@ const MainView = (src) => {
             objects : null
         };
         var mouse = new THREE.Vector2();
+        var raycaster;
 
         const InitLoadingScene = () => {
             loadingManager = new THREE.LoadingManager();
+
+            raycaster = new THREE.Raycaster();
 
             loadingManager.onLoad = () => {
                 setTimeout(() => {  
@@ -329,6 +332,14 @@ const MainView = (src) => {
         const AnimateStartScreen = () => {
             requestAnimationFrame(animate);
             //if (Date.now() - stTime > 2000) START_RENDERING = true;
+
+            raycaster.setFromCamera(mouse, camera);
+            
+            if (StartScreen.scene.children[6] !== null) {
+                const intersects = raycaster.intersectObjects( StartScreen.scene.children );
+                console.log(intersects);
+            }
+
             renderer.render(StartScreen.scene, StartScreen.camera);
         }
 
@@ -415,7 +426,7 @@ const MainView = (src) => {
             mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1; 
             
-            console.log(mouse.x + " " + mouse.y);
+           // console.log(mouse.x + " " + mouse.y);
         }
 
         //main prog
