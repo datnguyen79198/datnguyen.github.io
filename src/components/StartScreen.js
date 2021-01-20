@@ -10,13 +10,19 @@ var passingObj = {
     objects : null
 }
 
+var mouse = new THREE.Vector2();
+var raycaster,raycasterObjects = [];
+
 var StartScreen = {
     scene : new THREE.Scene(),
     camera : new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100),
+    mouseover : false
 };
 
 const InitLoading = () => {
-    loader = new THREE.FontLoader();
+    loader = new THREE.FontLoader( StartScreen.loadingManager );
+
+    raycaster = new THREE.Raycaster();
 }
 
 const InitScene = () => {
@@ -76,10 +82,11 @@ const InitScene = () => {
     groundMesh.position.z += 4;
     groundMesh.receiveShadow = true;
     StartScreen.scene.add(groundMesh);
+    //StartScreen.raycasterObjects.push(groundMesh);
 
     passingObj = {
         scene : StartScreen.scene,
-        objects : []
+        objects : raycasterObjects
     }
 
     for (let i=0; i<TEXTS_START.length; i++) {
@@ -90,7 +97,23 @@ const InitScene = () => {
     StartScreen.camera.lookAt(StartScreen.scene.position);
 }
 
+const onDocumentMouseMove = (event) => {
+    event.preventDefault();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1; 
+    
+    raycaster.setFromCamera(mouse, StartScreen.camera);
+
+    const intersects = raycaster.intersectObjects( raycasterObjects,true );
+    if (intersects.length > 0) StartScreen.mouseover = true;
+    else StartScreen.mouseover = false;
+    
+   // console.log(mouse.x + " " + mouse.y);
+}
+
 InitLoading();
 InitScene();
+window.addEventListener('mousemove',onDocumentMouseMove, false);
 
 export {StartScreen};
