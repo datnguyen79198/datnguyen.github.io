@@ -330,8 +330,12 @@ const MainView = (src) => {
 
         const AnimateStartScreen = () => {
             requestAnimationFrame(animate);
-            console.log(StartScreen.mouseover);
-            //if (Date.now() - stTime > 2000) START_RENDERING = true;
+            console.log(StartScreen.intersect + " " + StartScreen.raycasterObjects[0])
+            if (StartScreen.intersect !== null) {
+                StartScreen.raycasterObjects[0].visible = false;
+            } else {
+                if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = true;
+            }
             renderer.render(StartScreen.scene, StartScreen.camera);
         }
 

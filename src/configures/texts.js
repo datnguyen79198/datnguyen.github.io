@@ -279,7 +279,7 @@ const TEXTS_START = [
         bevelEnabled: true,
         bevelThickness: 0.001,
         //bevelSize: 0.0001,
-        bevelSize: 0.005,
+        bevelSize: 0.001,
         bevelSegments: 1
     }
 ]

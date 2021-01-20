@@ -11,12 +11,13 @@ var passingObj = {
 }
 
 var mouse = new THREE.Vector2();
-var raycaster,raycasterObjects = [];
+var raycaster;
 
 var StartScreen = {
     scene : new THREE.Scene(),
     camera : new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100),
-    mouseover : false
+    intersect : null,
+    raycasterObjects : []
 };
 
 const InitLoading = () => {
@@ -82,11 +83,11 @@ const InitScene = () => {
     groundMesh.position.z += 4;
     groundMesh.receiveShadow = true;
     StartScreen.scene.add(groundMesh);
-    //StartScreen.raycasterObjects.push(groundMesh);
+    //raycasterObjects.push(groundMesh);
 
     passingObj = {
         scene : StartScreen.scene,
-        objects : raycasterObjects
+        objects : StartScreen.raycasterObjects
     }
 
     for (let i=0; i<TEXTS_START.length; i++) {
@@ -105,11 +106,10 @@ const onDocumentMouseMove = (event) => {
     
     raycaster.setFromCamera(mouse, StartScreen.camera);
 
-    const intersects = raycaster.intersectObjects( raycasterObjects,true );
-    if (intersects.length > 0) StartScreen.mouseover = true;
-    else StartScreen.mouseover = false;
+    const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
+    if (intersects.length > 0) StartScreen.intersect = intersects[0];
+    else StartScreen.intersect = null;
     
-   // console.log(mouse.x + " " + mouse.y);
 }
 
 InitLoading();
