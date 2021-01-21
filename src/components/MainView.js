@@ -5,6 +5,7 @@ import { MODELS } from '../configures/models';
 import { UNITS } from '../configures/units';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
 import { StartScreen } from './StartScreen';
+import { LoadingScreen } from './LoadingScreen';
 
 import { TextLoader } from '../ultis/TextLoader';
 import { CustomGLTFLoader, InitiateUnits} from '../ultis/CustomGLTFLoader';
@@ -16,7 +17,7 @@ const MainView = (src) => {
         var mixers = [];
         var Obstacles = [], SteeringEntities = [], mainCharacteres = [], fishes = [];
         var boundingGround,boundingSky,boundingSea,mainCharacter;
-        var START_RENDERING = false;
+        var RESOURCES_LOADED = false, START_RENDERING = false;
         var loadingManager,loader;
         var passingObj = {
             scene : null,
@@ -41,6 +42,10 @@ const MainView = (src) => {
                 InitiateUnits(passingObjMain);
 
                 mainCharacter = mainCharacteres[0];
+            }
+
+            StartScreen.loadingManager.onLoad = () => {
+                RESOURCES_LOADED = true;
             }
         }
 
@@ -224,7 +229,16 @@ const MainView = (src) => {
             renderer.render(StartScreen.scene, StartScreen.camera);
         }
 
+        const AnimateLoadingScreen = () => {
+            requestAnimationFrame(animate);
+            renderer.render(LoadingScreen.scene, LoadingScreen.camera);
+        }
+
         const animate = () => {
+            if (RESOURCES_LOADED === false) {
+                AnimateLoadingScreen();
+                return;
+            }
 
             if (START_RENDERING === false) {
                 AnimateStartScreen();
