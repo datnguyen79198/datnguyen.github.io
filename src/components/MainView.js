@@ -3,6 +3,8 @@ import * as THREE from 'three';
 
 import { MODELS } from '../configures/models';
 import { UNITS } from '../configures/units';
+import {LOADING_MODELS} from '../configures/loading_models';
+import {LOADING_UNITS} from '../configures/loading_units';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
 import { StartScreen } from './StartScreen';
 import { LoadingScreen } from './LoadingScreen';
@@ -45,6 +47,20 @@ const MainView = (src) => {
             }
 
             StartScreen.loadingManager.onLoad = () => {
+
+                var passingObjMain = {
+                    MODELS : LOADING_MODELS,
+                    UNITS : LOADING_UNITS,
+                    worldScene : StartScreen.scene,
+                    loadingManager : StartScreen.loadingManager,
+                    SteeringEntities : StartScreen.SteeringEntities,
+                    mainCharacteres : StartScreen.mainCharacteres,
+                    Obstacles : StartScreen.Obstacles,
+                    mixers : StartScreen.mixers
+                }
+                
+                InitiateUnits(passingObjMain);
+
                 RESOURCES_LOADED = true;
             }
         }
@@ -214,6 +230,12 @@ const MainView = (src) => {
 
         const AnimateStartScreen = () => {
             requestAnimationFrame(animate);
+
+            const mixerUpdateDelta = clock.getDelta();
+
+            for (let i=0; i<StartScreen.mixers.length; i++) {
+                StartScreen.mixers[i].update(mixerUpdateDelta);
+            }
 
             if (StartScreen.intersect !== null) {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = false;

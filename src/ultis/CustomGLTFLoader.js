@@ -29,6 +29,8 @@ const loadGLTFModel = (model, passingObj) => {
 
         model.gltf = GLTFClone(gltf);
 
+        if (model.name === 'truck') console.log(gltf.animations);
+
     })
 }
 

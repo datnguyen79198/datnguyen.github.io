@@ -1,7 +1,11 @@
 import * as THREE from 'three';
 
 import { TEXTS_START } from '../configures/texts';
+import {LOADING_MODELS} from '../configures/loading_models';
+import {LOADING_UNITS} from '../configures/loading_units';
+
 import { TextLoader } from '../ultis/TextLoader';
+import { CustomGLTFLoader } from '../ultis/CustomGLTFLoader';
 
 var loader;
 var groundMesh;
@@ -9,7 +13,6 @@ var passingObj = {
     scene : null,
     objects : null
 }
-
 var mouse = new THREE.Vector2();
 var raycaster;
 
@@ -20,6 +23,10 @@ var StartScreen = {
     intersect : null,
     raycasterObjects : [],
     invisibleObj : [],
+    Obstacles : [], 
+    SteeringEntities : [], 
+    mainCharacteres : [],
+    mixers : []
 };
 
 const InitLoading = () => {
@@ -122,5 +129,18 @@ const onDocumentMouseMove = (event) => {
 InitLoading();
 InitScene();
 window.addEventListener('mousemove',onDocumentMouseMove, false);
+
+var passingObjMain = {
+    MODELS : LOADING_MODELS,
+    UNITS : LOADING_UNITS,
+    worldScene : StartScreen.scene,
+    loadingManager : StartScreen.loadingManager,
+    SteeringEntities : StartScreen.SteeringEntities,
+    mainCharacteres : StartScreen.mainCharacteres,
+    Obstacles : StartScreen.Obstacles,
+    mixers : StartScreen.mixers
+}
+
+CustomGLTFLoader(passingObjMain);
 
 export {StartScreen};
