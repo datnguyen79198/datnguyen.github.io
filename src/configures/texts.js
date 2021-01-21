@@ -278,8 +278,20 @@ const TEXTS_START = [
         curveSegments: 1,
         bevelEnabled: true,
         bevelThickness: 0.001,
-        //bevelSize: 0.0001,
-        bevelSize: 0.001,
+        bevelSize: 0.006,
+        //bevelSize: 0.006,
+        bevelSegments: 1
+    },
+    {
+        text : `START`,
+        position : {x: -0.5, y: 0, z: 0},
+        rotation : {x:-Math.PI/2, y:0, z:0},
+        size: 0.2,
+        height: 0.11,
+        curveSegments: 1,
+        bevelEnabled: true,
+        bevelThickness: 0.001,
+        bevelSize: 0.0001,
         bevelSegments: 1
     }
 ]

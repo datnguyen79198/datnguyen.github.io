@@ -330,11 +330,13 @@ const MainView = (src) => {
 
         const AnimateStartScreen = () => {
             requestAnimationFrame(animate);
-            console.log(StartScreen.intersect + " " + StartScreen.raycasterObjects[0])
+            //console.log(StartScreen.intersect + " " + StartScreen.raycasterObjects[0])
             if (StartScreen.intersect !== null) {
-                StartScreen.raycasterObjects[0].visible = false;
+                if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = false;
+                if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = true;
             } else {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = true;
+                if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = false;
             }
             renderer.render(StartScreen.scene, StartScreen.camera);
         }

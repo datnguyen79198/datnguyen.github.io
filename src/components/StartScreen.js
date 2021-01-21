@@ -17,7 +17,8 @@ var StartScreen = {
     scene : new THREE.Scene(),
     camera : new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100),
     intersect : null,
-    raycasterObjects : []
+    raycasterObjects : [],
+    invisibleObj : [],
 };
 
 const InitLoading = () => {
@@ -90,9 +91,14 @@ const InitScene = () => {
         objects : StartScreen.raycasterObjects
     }
 
-    for (let i=0; i<TEXTS_START.length; i++) {
-        TextLoader(loader, TEXTS_START[i], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
+    TextLoader(loader, TEXTS_START[0], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
+
+    passingObj = {
+        scene : StartScreen.scene,
+        objects : StartScreen.invisibleObj
     }
+
+    TextLoader(loader, TEXTS_START[1], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
 
     StartScreen.camera.position.set(0,2,1.5);
     StartScreen.camera.lookAt(StartScreen.scene.position);
