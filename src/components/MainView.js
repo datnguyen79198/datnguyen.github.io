@@ -1,28 +1,22 @@
 import { useEffect } from 'react';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import { MODELS } from '../configures/models';
 import { UNITS } from '../configures/units';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
-import { LoadingScreen } from './LoadingScreen';
 import { StartScreen } from './StartScreen';
 
-import { SteeringEntity } from '../components/SteeringEntity';
-import { Entity } from '../components/Entity';
-import { Character } from '../components/Character';
-
-import { GLTFClone,SceneClone } from '../ultis/CloneMethods';
 import { TextLoader } from '../ultis/TextLoader';
+import { CustomGLTFLoader, InitiateUnits} from '../ultis/CustomGLTFLoader';
 
 const MainView = (src) => {
     useEffect(() => {
         var worldScene,camera,renderer,clock;
         var groundMesh;
         var mixers = [];
-        var Obstacles = [], SteeringEntities = [], mainCharacter, fishes = [];
-        var boundingGround,boundingSky,boundingSea;
-        var RESOURCES_LOADED = false, START_RENDERING = false;
+        var Obstacles = [], SteeringEntities = [], mainCharacteres = [], fishes = [];
+        var boundingGround,boundingSky,boundingSea,mainCharacter;
+        var START_RENDERING = false;
         var loadingManager,loader;
         var passingObj = {
             scene : null,
@@ -33,14 +27,21 @@ const MainView = (src) => {
             loadingManager = new THREE.LoadingManager();
 
             loadingManager.onLoad = () => {
-                setTimeout(() => {  
-                    RESOURCES_LOADED = true; 
-                }, 2000);
-            }
+                var passingObjMain = {
+                    MODELS : MODELS,
+                    UNITS : UNITS,
+                    worldScene : worldScene,
+                    loadingManager : loadingManager,
+                    SteeringEntities : SteeringEntities,
+                    mainCharacteres : mainCharacteres,
+                    Obstacles : Obstacles,
+                    mixers : mixers
+                }
+                
+                InitiateUnits(passingObjMain);
 
-            /*StartScreen.loadingManager.onLoad = () => {
-                raycasterObjects.push(StartScreen.scene.children[6]);
-            }*/
+                mainCharacter = mainCharacteres[0];
+            }
         }
 
         const InitScene = () => {
@@ -150,141 +151,25 @@ const MainView = (src) => {
             document.getElementById(src).appendChild(renderer.domElement);
         }
 
-        const LoadModels = () => {
-            var num=0;
-            for (let i=0; i< MODELS.length; i++) {
-                const model = MODELS[i];
-                loadGLTFModel(model , () => {
-                    num++;
-
-                    if (num===MODELS.length) {
-                        InitiateUnits();
-                    }
-                });
+        const loadModels = () => {
+            var passingObjMain = {
+                MODELS : MODELS,
+                UNITS : UNITS,
+                worldScene : worldScene,
+                loadingManager : loadingManager,
+                SteeringEntities : SteeringEntities,
+                mainCharacter : mainCharacter,
+                Obstacles : Obstacles,
+                mixers : mixers
             }
-        }
-
-        const GetModelByName = (unitName) => {
-            for (let i=0; i<MODELS.length; i++) {
-                if (unitName.includes(MODELS[i].name)) {
-                    return MODELS[i];
-                }
-            }
-
-            return null;
-        }
-
-        const InitiateUnits = () => {
-            for (let i=0; i<UNITS.length; i++) {
-
-                const unit = UNITS[i];
-                const model = GetModelByName(unit.name);
-
-                if (model) {
-                    var unitScene = SceneClone( model.gltf.scene );
-                    const modelAnimations = model.gltf.animations;
-
-                    var unitEntity;
-                    var type;
-                    if (unit.entity_type === 'Steering' || unit.entity_type === 'Main_character') {
-                        if (unit.entity_type === 'Steering') {
-                            unitEntity = new SteeringEntity(unitScene,unit.name,unit.maxSpeed,
-                                                            unit.wanderDistance,unit.wanderAngle,
-                                                            unit.wanderRadius,unit.wanderRange,0);
-                            type = 0;
-                        } else {
-                            unitEntity = new Character(unitScene,unit.maxSpeed,unit.boundingRadius);
-                            type = 1;
-                        }
-                    } 
-                    else if (unit.entity_type === 'Obstacle') {
-                        unitEntity = new Entity(unitScene,0,unit.boundingRadius);
-                        type = 2;
-                    } 
-                    else {
-                        unitEntity = unitScene;
-                        type = 3;
-                    }
-
-                    if (unit.position) {
-                        unitEntity.position.set(unit.position.x, unit.position.y, unit.position.z);
-                    }
-
-                    if (unit.scale) {
-                        unitEntity.scale.set(unit.scale, unit.scale, unit.scale);
-                    }
-
-                    if (unit.rotation) {
-                        if (unit.name === 'boxman') console.log(unit.rotation);
-                        unitEntity.rotation.set(unit.rotation.x, unit.rotation.y, unit.rotation.z)
-                    }
-
-                    if (unit.animation) {
-                        for (let i=0;i<unit.animation.length;i++) {
-                            let animate = unit.animation[i];
-                            const mixer = StartAnimation(unitEntity, modelAnimations, animate);
-                            mixers.push(mixer);
-                        }
-                    }
-
-                    if (type === 0) {
-                        SteeringEntities.push(unitEntity);
-                    } 
-                    else if (type === 1) {
-                        mainCharacter = unitEntity;
-                    }
-                    else if (type === 2) {
-                        Obstacles.push(unitEntity);
-                    }
-                    
-                    worldScene.add(unitEntity);
-
-                } else {
-                    console.error("not found model");
-                }
-            }
-        }
-
-        const loadGLTFModel = (model, onLoad) => {
-            const loader = new GLTFLoader( loadingManager );
-            const url_model = model.url;
-            //console.log('load model from ' + url_model);
-
-            loader.load(url_model, (gltf) => {
-
-                gltf.scene.traverse((obj) => {
-                    if (obj.isMesh) {
-                        //if (model.name === 'water') console.log(obj.name);
-                        obj.castShadow = model.castShadow;
-                        obj.receiveShadow = model.receiveShadow;
-                    }
-                })
-
-                model.gltf = GLTFClone(gltf);
-
-                //if (model.name === 'fish_0') console.log(model.animations);
-
-                onLoad();
-            })
-        }
-
-        const StartAnimation = (mesh, animations, animationName) => {
-            const mixer = new THREE.AnimationMixer(mesh);
-            const clip = THREE.AnimationClip.findByName(animations, animationName);
-
-            //console.log(clip);
+    
+            CustomGLTFLoader(passingObjMain);
             
-            if (clip) {
-                const action = mixer.clipAction(clip);
-                action.play();
-            }
-
-            return mixer;
         }
 
         const gameLogic = () => {
+
             if (mainCharacter) {
-                //mainCharacter.lookWhereGoing();
                 mainCharacter.update();
             }
 
@@ -297,16 +182,16 @@ const MainView = (src) => {
                 var steeringObj = SteeringEntities[i];
                 if (steeringObj.name === 'cat') {
                     steeringObj.wander(boundingGround);
-                    steeringObj.avoid(Obstacles);
-                    steeringObj.avoid(mainCharacter);
-                    steeringObj.evade(mainCharacter);
+                    if (Obstacles.length > 0) steeringObj.avoid(Obstacles);
+                    if (mainCharacter!==null) steeringObj.avoid(mainCharacter);
+                    if (mainCharacter!==null) steeringObj.evade(mainCharacter);
                     steeringObj.lookWhereGoing();
                     steeringObj.bounce(boundingGround);
                 }
 
                 if (steeringObj.name.includes('fish_')) {
                     steeringObj.wander(boundingSea);
-                    steeringObj.avoid(fishes);
+                    if (fishes.length > 0) steeringObj.avoid(fishes);
                     steeringObj.lookWhereGoing();
                     steeringObj.bounce(boundingSea);
                 }
@@ -321,19 +206,17 @@ const MainView = (src) => {
 
         var dt = 1000/60;
         var timetarget = 0;
-        var stTime = Date.now();
-
-        const AnimateLoadingScene = () => {
-            requestAnimationFrame(animate);
-            renderer.render(LoadingScreen.scene, LoadingScreen.camera);
-        }
 
         const AnimateStartScreen = () => {
             requestAnimationFrame(animate);
-            //console.log(StartScreen.intersect + " " + StartScreen.raycasterObjects[0])
+
             if (StartScreen.intersect !== null) {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = false;
                 if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = true;
+                setTimeout(() => {
+                    START_RENDERING = true;
+                }, 5000);
+
             } else {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = true;
                 if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = false;
@@ -350,12 +233,6 @@ const MainView = (src) => {
                 StartScreen.scene.remove.apply(StartScreen.scene, StartScreen.scene.children);
             }
 
-            if (RESOURCES_LOADED === false) {
-                AnimateLoadingScene();
-                return;
-            } else {
-                LoadingScreen.scene.remove.apply(LoadingScreen.scene, LoadingScreen.scene.children);
-            }
             if (Date.now() >= timetarget) {
 
                 const mixerUpdateDelta = clock.getDelta();
@@ -424,7 +301,7 @@ const MainView = (src) => {
         InitScene(); 
         InitRenderer();
         InitLoadingScene();
-        LoadModels();
+        loadModels();
         animate();
         document.addEventListener('keydown',onPushKeyboard,false);
         document.addEventListener('keyup',onReleaseKeyboard,false);
