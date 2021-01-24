@@ -92,7 +92,10 @@ const InitiateUnits = (passingObj) => {
                 for (let i=0;i<unit.animation.length;i++) {
                     let animate = unit.animation[i];
                     const mixer = StartAnimation(unitEntity, modelAnimations, animate);
-                    passingObj.mixers.push(mixer);
+                    passingObj.mixers.push({
+                        mixer : mixer,
+                        name : unit.name
+                    });
                 }
             }
             if (type === 0) {
@@ -125,4 +128,32 @@ const StartAnimation = (mesh, animations, animationName) => {
     return mixer;
 }
 
-export {CustomGLTFLoader , InitiateUnits};
+const RemoveMixers = (passingObj,unitName) => {
+    var id = -1;
+    for (let i = 0; i<passingObj.mixers.length; i++) 
+        if (passingObj.mixers[i].name === unitName) {
+            id = i;
+        }
+    console.log(unitName + " " + id);
+    if (id !== -1) passingObj.mixers.splice(id,1);
+}
+
+const ChangeAnimation = (passingObj, unitEntity, animationName) => {
+    console.log(passingObj.mixers);
+    RemoveMixers(passingObj,unitEntity.name);
+    if (animationName) {
+        const model = GetModelByName(passingObj,unitEntity.name);
+        if (model) {
+            //console.log("fuck");
+            const modelAnimations = model.gltf.animations;
+            const mixer = StartAnimation(unitEntity, modelAnimations, animationName);
+            passingObj.mixers.push({
+                mixer : mixer,
+                name : unitEntity.name
+            });
+        }
+    }
+    //console.log(passingObj.mixers);
+}
+
+export {CustomGLTFLoader , InitiateUnits, ChangeAnimation};

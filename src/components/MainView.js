@@ -10,7 +10,7 @@ import { StartScreen } from './StartScreen';
 import { LoadingScreen } from './LoadingScreen';
 
 import { TextLoader } from '../ultis/TextLoader';
-import { CustomGLTFLoader, InitiateUnits} from '../ultis/CustomGLTFLoader';
+import { CustomGLTFLoader, InitiateUnits, ChangeAnimation} from '../ultis/CustomGLTFLoader';
 
 const MainView = (src) => {
     useEffect(() => {
@@ -227,6 +227,7 @@ const MainView = (src) => {
 
         var dt = 1000/60;
         var timetarget = 0;
+        var beenMouseover = false;
 
         const AnimateStartScreen = () => {
             requestAnimationFrame(animate);
@@ -234,19 +235,54 @@ const MainView = (src) => {
             const mixerUpdateDelta = clock.getDelta();
 
             for (let i=0; i<StartScreen.mixers.length; i++) {
-                StartScreen.mixers[i].update(mixerUpdateDelta);
+                StartScreen.mixers[i].mixer.update(mixerUpdateDelta);
             }
+
+            //console.log(StartScreen.SteeringEntities[0].name);
+
+            var truckObject = StartScreen.SteeringEntities[0];
 
             if (StartScreen.intersect !== null) {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = false;
                 if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = true;
-                setTimeout(() => {
+                /*setTimeout(() => {
+                    StartScreen.scene.remove.apply(StartScreen.scene, StartScreen.scene.children);
                     START_RENDERING = true;
-                }, 5000);
+                }, 2000);*/
+                if (!beenMouseover) {
+                    let passingObjMain = {
+                        MODELS : LOADING_MODELS,
+                        UNITS : LOADING_UNITS,
+                        worldScene : StartScreen.scene,
+                        loadingManager : StartScreen.loadingManager,
+                        SteeringEntities : StartScreen.SteeringEntities,
+                        mainCharacteres : StartScreen.mainCharacteres,
+                        Obstacles : StartScreen.Obstacles,
+                        mixers : StartScreen.mixers
+                    }
+
+                    ChangeAnimation(passingObjMain,truckObject,'Scene');
+                    beenMouseover = true;
+                }
 
             } else {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = true;
                 if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = false;
+
+                if (beenMouseover) {
+                    let passingObjMain = {
+                        MODELS : LOADING_MODELS,
+                        UNITS : LOADING_UNITS,
+                        worldScene : StartScreen.scene,
+                        loadingManager : StartScreen.loadingManager,
+                        SteeringEntities : StartScreen.SteeringEntities,
+                        mainCharacteres : StartScreen.mainCharacteres,
+                        Obstacles : StartScreen.Obstacles,
+                        mixers : StartScreen.mixers
+                    }
+                    ChangeAnimation(passingObjMain,truckObject,null);
+                    beenMouseover = false;
+                }
             }
             renderer.render(StartScreen.scene, StartScreen.camera);
         }
@@ -265,8 +301,6 @@ const MainView = (src) => {
             if (START_RENDERING === false) {
                 AnimateStartScreen();
                 return;
-            } else {
-                StartScreen.scene.remove.apply(StartScreen.scene, StartScreen.scene.children);
             }
 
             if (Date.now() >= timetarget) {
@@ -274,7 +308,7 @@ const MainView = (src) => {
                 const mixerUpdateDelta = clock.getDelta();
 
                 for (let i=0; i<mixers.length; i++) {
-                    mixers[i].update(mixerUpdateDelta);
+                    mixers[i].mixer.update(mixerUpdateDelta);
                 }
 
                 gameLogic();
