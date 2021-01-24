@@ -81,7 +81,7 @@ const MainView = (src) => {
             const HemisphereLight = new THREE.HemisphereLight( 0xFFF6DD, 0x05050C, 1.1 );
             worldScene.add(HemisphereLight);
 
-            const sunLight = new THREE.DirectionalLight(0xFEE8C9, 1);
+            const sunLight = new THREE.DirectionalLight(0xFEE8C9, 0.5);
             sunLight.position.set(-7,10,-7);
             sunLight.target.position.set(0,0,0);
             sunLight.castShadow = true;
