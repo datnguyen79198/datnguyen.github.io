@@ -135,7 +135,11 @@ const RemoveMixers = (passingObj,unitName) => {
             id = i;
         }
     console.log(unitName + " " + id);
-    if (id !== -1) passingObj.mixers.splice(id,1);
+    if (id !== -1) {
+        passingObj.mixers[id].mixer.stopAllAction();
+        passingObj.mixers.splice(id,1);
+    }
+
 }
 
 const ChangeAnimation = (passingObj, unitEntity, animationName) => {
