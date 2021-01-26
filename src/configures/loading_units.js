@@ -90,7 +90,7 @@ const LOADING_UNITS = [
         rotation : null,
         specific : null,
         entity_type : 'Obstacles',
-        scale : 0.1
+        scale : 0.07
     },
     {
         name : 'tree',
@@ -99,20 +99,20 @@ const LOADING_UNITS = [
         rotation : null,
         specific : null,
         entity_type : 'Obstacles',
-        scale : 0.1
+        scale : 0.07
     },
     {
         name : 'tree',
         position : { x: 1.8, y: 0.2, z: -1.5},
         animation : null,
-        rotation : {x : 0.5, y: Math.PI/2, z:0},
+        rotation : {x : 0.3, y: Math.PI/2, z:0},
         specific : null,
         entity_type : 'Obstacles',
-        scale : 0.1
+        scale : 0.07
     },
     {
         name : 'axe',
-        position : { x: 1.5, y: 0.3, z: -1.2},
+        position : { x: 1.55, y: 0.45, z: -1.7},
         animation : null,
         rotation : {x : Math.PI/2, y : 0, z: -Math.PI/2 + 0.5},
         specific : null,

@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { Line2 } from 'three/examples/jsm/lines/Line2';
 
 import { TEXTS_START } from '../configures/texts';
 import {LOADING_MODELS} from '../configures/loading_models';
@@ -55,36 +58,8 @@ const InitScene = () => {
 	sunLight.shadow.camera.far = 100;
     StartScreen.scene.add(sunLight);
 
-    //Oxyz
-    const lineMatX = new THREE.LineBasicMaterial({color: 0xFF0000}); //red
-    const lineMatY = new THREE.LineBasicMaterial({color: 0xABFF00}); //green
-    const lineMatZ = new THREE.LineBasicMaterial({color: 0x0016FF}); //blue
-    const pointO = new THREE.Vector3(0,0,0);
-
-    const pointsX = [];
-    pointsX.push(pointO);
-    pointsX.push(new THREE.Vector3(10,0,0));
-    const lineGeoX = new THREE.BufferGeometry().setFromPoints(pointsX);
-
-    const pointsY = [];
-    pointsY.push(pointO);
-    pointsY.push(new THREE.Vector3(0,10,0));
-    const lineGeoY = new THREE.BufferGeometry().setFromPoints(pointsY);
-
-    const pointsZ = [];
-    pointsZ.push(pointO);
-    pointsZ.push(new THREE.Vector3(0,0,10));
-    const lineGeoZ = new THREE.BufferGeometry().setFromPoints(pointsZ); 
-
-    const Ox = new THREE.Line(lineGeoX, lineMatX);
-    const Oy = new THREE.Line(lineGeoY, lineMatY);
-    const Oz = new THREE.Line(lineGeoZ, lineMatZ);
-    StartScreen.scene.add(Ox);
-    StartScreen.scene.add(Oy);
-    StartScreen.scene.add(Oz);
-    StartScreen.scene.add(StartScreen.mesh);
-
     //ground 
+    
     const groundGeo = new THREE.PlaneBufferGeometry(20,20);
     const groundMat = new THREE.MeshPhongMaterial({ color: 0x6D3E05});
     groundMesh = new THREE.Mesh(groundGeo,groundMat);
@@ -93,6 +68,26 @@ const InitScene = () => {
     groundMesh.receiveShadow = true;
     StartScreen.scene.add(groundMesh);
     //raycasterObjects.push(groundMesh);
+    
+    //lane
+    var lane = [];
+    lane.push( new THREE.Vector2(-0.5,-0.5));
+    lane.push( new THREE.Vector2(-0.5,0.5));
+    lane.push( new THREE.Vector2(0.5,0.5));
+    lane.push( new THREE.Vector2(0.5,-0.5));
+    var laneShape = new THREE.Shape(lane);
+    var geometry = new THREE.ShapeBufferGeometry( laneShape );
+
+    var mesh = new THREE.Mesh(
+        geometry, 
+        new THREE.MeshPhongMaterial( { 
+            color: 0x354001, 
+            side: THREE.DoubleSide 
+        } ) 
+    );
+    mesh.rotation.set(Math.PI/2,0,0);
+    mesh.receiveShadow = true;
+	StartScreen.scene.add( mesh );
 
     passingObj = {
         scene : StartScreen.scene,
