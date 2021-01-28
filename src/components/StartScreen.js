@@ -1,7 +1,4 @@
 import * as THREE from 'three';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
-import { Line2 } from 'three/examples/jsm/lines/Line2';
 
 import { TEXTS_START } from '../configures/texts';
 import {LOADING_MODELS} from '../configures/loading_models';
@@ -9,6 +6,8 @@ import {LOADING_UNITS} from '../configures/loading_units';
 
 import { TextLoader } from '../ultis/TextLoader';
 import { CustomGLTFLoader } from '../ultis/CustomGLTFLoader';
+
+import { plane } from '../configures/loading_roads';
 
 var loader;
 var groundMesh;
@@ -29,7 +28,9 @@ var StartScreen = {
     Obstacles : [], 
     SteeringEntities : [], 
     mainCharacteres : [],
-    mixers : []
+    mixers : [],
+    road : [],
+    copy : '',
 };
 
 const InitLoading = () => {
@@ -67,28 +68,31 @@ const InitScene = () => {
     groundMesh.position.z += 4;
     groundMesh.receiveShadow = true;
     StartScreen.scene.add(groundMesh);
-    //raycasterObjects.push(groundMesh);
+
+    StartScreen.raycasterObjects.push(groundMesh);
     
-    //lane
-    var lane = [];
-    lane.push( new THREE.Vector2(-0.5,-0.5));
-    lane.push( new THREE.Vector2(-0.5,0.5));
-    lane.push( new THREE.Vector2(0.5,0.5));
-    lane.push( new THREE.Vector2(0.5,-0.5));
-    var laneShape = new THREE.Shape(lane);
-    var geometry = new THREE.ShapeBufferGeometry( laneShape );
-
-    var mesh = new THREE.Mesh(
-        geometry, 
-        new THREE.MeshPhongMaterial( { 
-            color: 0x354001, 
-            side: THREE.DoubleSide 
-        } ) 
-    );
-    mesh.rotation.set(Math.PI/2,0,0);
-    mesh.receiveShadow = true;
-	StartScreen.scene.add( mesh );
-
+    //road
+    for (var key in plane) {
+        var planeTex = plane[key];
+        var lane = [];
+        for (let i =0; i<planeTex.length; i+=2) {
+            lane.push(new THREE.Vector2(planeTex[i],planeTex[i+1]));
+        }
+        var laneShape = new THREE.Shape(lane);
+        var geometry = new THREE.ShapeBufferGeometry( laneShape );
+        
+        var mesh = new THREE.Mesh(
+            geometry, 
+            new THREE.MeshPhongMaterial( { 
+                color: 0x354001, 
+                side: THREE.DoubleSide 
+            } ) 
+        );
+        mesh.rotation.set(Math.PI/2,0,0);
+        mesh.receiveShadow = true;
+        StartScreen.scene.add( mesh );
+    }
+    
     passingObj = {
         scene : StartScreen.scene,
         objects : StartScreen.raycasterObjects
@@ -115,15 +119,45 @@ const onDocumentMouseMove = (event) => {
     
     raycaster.setFromCamera(mouse, StartScreen.camera);
 
-    const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
-    if (intersects.length > 0) StartScreen.intersect = intersects[0];
-    else StartScreen.intersect = null;
+    if (event.ctrlKey) {
+        const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
+        if (intersects.length > 0) {
+            StartScreen.road.push(new THREE.Vector2(intersects[0].point.x, intersects[0].point.z));
+            StartScreen.copy += String(intersects[0].point.x)+','+String(intersects[0].point.z)+',';
+        }
+    }
+    else {
+        const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
+        if (intersects.length > 0) StartScreen.intersect = intersects[0];
+        else StartScreen.intersect = null;
+    }
     
+}
+
+const onDocumentKeyDown = (event) => {
+    var keyName = event.key;
+
+    if (keyName === 'p') {
+        console.log(StartScreen.copy);
+        var laneShape = new THREE.Shape(StartScreen.road);
+        var geometry = new THREE.ShapeBufferGeometry( laneShape );
+        var mesh = new THREE.Mesh(
+            geometry, 
+            new THREE.MeshPhongMaterial( { 
+                color: 0x442800 , 
+                side: THREE.DoubleSide 
+            } ) 
+        );
+        mesh.rotation.set(Math.PI/2,0,0);
+        mesh.receiveShadow = true;
+        StartScreen.scene.add( mesh );
+    }
 }
 
 InitLoading();
 InitScene();
 window.addEventListener('mousemove',onDocumentMouseMove, false);
+window.addEventListener('keydown',onDocumentKeyDown,false);
 
 var passingObjMain = {
     MODELS : LOADING_MODELS,
@@ -133,7 +167,8 @@ var passingObjMain = {
     SteeringEntities : StartScreen.SteeringEntities,
     mainCharacteres : StartScreen.mainCharacteres,
     Obstacles : StartScreen.Obstacles,
-    mixers : StartScreen.mixers
+    mixers : StartScreen.mixers,
+    road : StartScreen.road
 }
 
 CustomGLTFLoader(passingObjMain);
