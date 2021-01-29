@@ -7,7 +7,7 @@ import {LOADING_UNITS} from '../configures/loading_units';
 import { TextLoader } from '../ultis/TextLoader';
 import { CustomGLTFLoader } from '../ultis/CustomGLTFLoader';
 
-import { plane } from '../configures/loading_roads';
+import { plane,color_plane } from '../configures/loading_roads';
 
 var loader;
 var groundMesh;
@@ -69,11 +69,12 @@ const InitScene = () => {
     groundMesh.receiveShadow = true;
     StartScreen.scene.add(groundMesh);
 
-    StartScreen.raycasterObjects.push(groundMesh);
+    //StartScreen.raycasterObjects.push(groundMesh);
     
     //road
     for (var key in plane) {
         var planeTex = plane[key];
+        var colorTex = color_plane[key];
         var lane = [];
         for (let i =0; i<planeTex.length; i+=2) {
             lane.push(new THREE.Vector2(planeTex[i],planeTex[i+1]));
@@ -84,7 +85,7 @@ const InitScene = () => {
         var mesh = new THREE.Mesh(
             geometry, 
             new THREE.MeshPhongMaterial( { 
-                color: 0x354001, 
+                color: colorTex, 
                 side: THREE.DoubleSide 
             } ) 
         );
@@ -131,7 +132,36 @@ const onDocumentMouseMove = (event) => {
         if (intersects.length > 0) StartScreen.intersect = intersects[0];
         else StartScreen.intersect = null;
     }
+}
+
+const onDocumentMouseDown = (event) => {
+    event.preventDefault();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1; 
     
+    raycaster.setFromCamera(mouse, StartScreen.camera);
+
+    const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
+    if (intersects.length > 0) {
+        StartScreen.raycasterObjects[0].position.y -= 0.1;
+        StartScreen.invisibleObj[0].position.y -= 0.1;
+    }
+}
+
+const onDocumentMouseUp = (event) => {
+    event.preventDefault();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1; 
+    
+    raycaster.setFromCamera(mouse, StartScreen.camera);
+
+    const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
+    if (intersects.length > 0) {
+        StartScreen.raycasterObjects[0].position.y += 0.1;
+        StartScreen.invisibleObj[0].position.y += 0.1;
+    }
 }
 
 const onDocumentKeyDown = (event) => {
@@ -158,6 +188,8 @@ InitLoading();
 InitScene();
 window.addEventListener('mousemove',onDocumentMouseMove, false);
 window.addEventListener('keydown',onDocumentKeyDown,false);
+window.addEventListener('mousedown',onDocumentMouseDown,false);
+window.addEventListener('mouseup',onDocumentMouseUp,false);
 
 var passingObjMain = {
     MODELS : LOADING_MODELS,

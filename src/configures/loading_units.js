@@ -84,7 +84,7 @@ const LOADING_UNITS = [
         scale : 0.01
     },
     {
-        name : 'tree',
+        name : 'root',
         position : { x: 2, y: 0, z: -2},
         animation : null,
         rotation : null,
@@ -93,7 +93,7 @@ const LOADING_UNITS = [
         scale : 0.07
     },
     {
-        name : 'tree',
+        name : 'root',
         position : { x: 2, y: 0, z: -1.7},
         animation : null,
         rotation : null,
@@ -102,7 +102,7 @@ const LOADING_UNITS = [
         scale : 0.07
     },
     {
-        name : 'tree',
+        name : 'root',
         position : { x: 1.8, y: 0.2, z: -1.5},
         animation : null,
         rotation : {x : 0.3, y: Math.PI/2, z:0},
@@ -129,5 +129,20 @@ const LOADING_UNITS = [
         scale : 0.35
     }
 ]
+
+for (let i=0;i<4;i++)
+    for (let j=0;j<2;j++) {
+        LOADING_UNITS.push(
+            {
+                name : 'tree_autumn',
+                position : { x: -1.7 - i*0.8, y: -1.4, z: -4 - j*0.8},
+                animation : null,
+                rotation : null,
+                specific : null,
+                entity_type : 'Obstacles',
+                scale : 0.1
+            }
+        )
+    }
 
 export {LOADING_UNITS}

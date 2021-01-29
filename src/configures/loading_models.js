@@ -18,8 +18,8 @@ const LOADING_MODELS = [
         receiveShadow : true
     },
     {
-        name : 'tree',
-        url : './asserts/tree/scene.gltf',
+        name : 'root',
+        url : './asserts/root/scene.gltf',
         castShadow : true,
         receiveShadow : true
     },
@@ -32,6 +32,12 @@ const LOADING_MODELS = [
     {
         name : 'tent',
         url : './asserts/tent/scene.gltf',
+        castShadow : true,
+        receiveShadow : true
+    },
+    {
+        name : 'tree_autumn',
+        url : './asserts/tree_autumn/scene.gltf',
         castShadow : true,
         receiveShadow : true
     }
