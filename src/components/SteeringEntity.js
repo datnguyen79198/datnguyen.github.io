@@ -9,6 +9,7 @@ export class SteeringEntity extends Entity {
         this.maxForce = 1;
         this.avoidDistance = 0.5;
         this.steeringForce = new THREE.Vector3(0,0,0);
+        this.locationIndex = 0;
 
         this.wanderDistance = wanderDistance;
         this.wanderAngle = wanderAngle;
@@ -92,6 +93,21 @@ export class SteeringEntity extends Entity {
         var lookAheadTime = this.position.distanceTo(target.position) / this.maxSpeed;
         var predictedTarget = target.position.clone().sub(target.velocity.clone().setLength(lookAheadTime));
         this.flee(predictedTarget);
+    }
+
+    seek(position) {
+        var desiredVelocity = position.clone().sub(this.position);
+        desiredVelocity.normalize().setLength(this.maxSpeed).sub(this.velocity);
+        this.steeringForce.add(desiredVelocity);
+    }
+
+    followPath(path, thresholdRadius = 0.5) {
+        var wayPoint = path[this.locationIndex]
+        if (wayPoint == null) return;
+        if (this.position.distanceTo(wayPoint) < thresholdRadius && this.locationIndex+1 < path.length ) {
+            this.locationIndex++;
+        }
+        this.seek(wayPoint);
     }
 
     update() {
