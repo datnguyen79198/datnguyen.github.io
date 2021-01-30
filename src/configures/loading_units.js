@@ -1,7 +1,7 @@
 const LOADING_UNITS = [
     {
         name : 'truck',
-        position : { x: -1.8, y: 0.04, z: 1 },
+        position : { x: -1.8, y: 0.05, z: 1 },
         //animation : ['Scene'],
         animation : null,
         rotation : null,

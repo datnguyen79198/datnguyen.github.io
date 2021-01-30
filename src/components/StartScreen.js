@@ -69,7 +69,7 @@ const InitScene = () => {
     groundMesh.receiveShadow = true;
     StartScreen.scene.add(groundMesh);
 
-    //StartScreen.raycasterObjects.push(groundMesh);
+    StartScreen.raycasterObjects.push(groundMesh);
     
     //road
     for (var key in plane) {
@@ -123,8 +123,10 @@ const onDocumentMouseMove = (event) => {
     if (event.ctrlKey) {
         const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
         if (intersects.length > 0) {
+            /* for initial texture
             StartScreen.road.push(new THREE.Vector2(intersects[0].point.x, intersects[0].point.z));
             StartScreen.copy += String(intersects[0].point.x)+','+String(intersects[0].point.z)+',';
+            */
         }
     }
     else {
@@ -146,6 +148,8 @@ const onDocumentMouseDown = (event) => {
     if (intersects.length > 0) {
         StartScreen.raycasterObjects[0].position.y -= 0.1;
         StartScreen.invisibleObj[0].position.y -= 0.1;
+
+        StartScreen.road.push(new THREE.Vector3(intersects[0].point.x, 0, intersects[0].point.z));
     }
 }
 

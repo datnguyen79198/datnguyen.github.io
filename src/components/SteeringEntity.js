@@ -103,6 +103,7 @@ export class SteeringEntity extends Entity {
 
     followPath(path, thresholdRadius = 0.5) {
         var wayPoint = path[this.locationIndex]
+        //console.log(wayPoint);
         if (wayPoint == null) return;
         if (this.position.distanceTo(wayPoint) < thresholdRadius && this.locationIndex+1 < path.length ) {
             this.locationIndex++;

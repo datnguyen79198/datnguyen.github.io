@@ -240,15 +240,14 @@ const MainView = (src) => {
 
 
             var truckObject = StartScreen.SteeringEntities[0];
-
+            //console.log(StartScreen.road);
+            truckObject.followPath(StartScreen.road, 0.2);
+            truckObject.lookWhereGoing();
+            truckObject.update();
+            /*
             if (StartScreen.intersect !== null) {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = false;
                 if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = true;
-                /*
-                setTimeout(() => {
-                    StartScreen.scene.remove.apply(StartScreen.scene, StartScreen.scene.children);
-                    START_RENDERING = true;
-                }, 2000);*/
                 if (!beenMouseover) {
                     let passingObjMain = {
                         MODELS : LOADING_MODELS,
@@ -284,7 +283,7 @@ const MainView = (src) => {
                     beenMouseover = false;
                 }
             }
-            
+            */
             renderer.render(StartScreen.scene, StartScreen.camera);
         }
 
