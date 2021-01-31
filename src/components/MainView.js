@@ -3,9 +3,10 @@ import * as THREE from 'three';
 
 import { MODELS } from '../configures/models';
 import { UNITS } from '../configures/units';
-import {LOADING_MODELS} from '../configures/loading_models';
-import {LOADING_UNITS} from '../configures/loading_units';
+import { LOADING_MODELS } from '../configures/loading_models';
+import { LOADING_UNITS } from '../configures/loading_units';
 import { TEXTS_INTRO,TEXTS_AWARD } from '../configures/texts';
+
 import { StartScreen } from './StartScreen';
 import { LoadingScreen } from './LoadingScreen';
 
@@ -244,7 +245,7 @@ const MainView = (src) => {
             truckObject.followPath(StartScreen.road, 0.2);
             if (StartScreen.road.length>0) truckObject.lookWhereGoing();
             truckObject.update();
-            /*
+            
             if (StartScreen.intersect !== null) {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = false;
                 if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = true;
@@ -283,7 +284,7 @@ const MainView = (src) => {
                     beenMouseover = false;
                 }
             }
-            */
+            
             renderer.render(StartScreen.scene, StartScreen.camera);
         }
 

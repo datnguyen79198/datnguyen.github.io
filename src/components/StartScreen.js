@@ -7,7 +7,7 @@ import {LOADING_UNITS} from '../configures/loading_units';
 import { TextLoader } from '../ultis/TextLoader';
 import { CustomGLTFLoader } from '../ultis/CustomGLTFLoader';
 
-import { plane,color_plane } from '../configures/loading_roads';
+import { plane,color_plane,truck_path } from '../configures/loading_roads';
 
 var loader;
 var groundMesh;
@@ -69,7 +69,7 @@ const InitScene = () => {
     groundMesh.receiveShadow = true;
     StartScreen.scene.add(groundMesh);
 
-    StartScreen.raycasterObjects.push(groundMesh);
+    //StartScreen.raycasterObjects.push(groundMesh);
     
     //road
     for (var key in plane) {
@@ -99,14 +99,14 @@ const InitScene = () => {
         objects : StartScreen.raycasterObjects
     }
 
-    TextLoader(loader, TEXTS_START[0], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
+    TextLoader(loader, TEXTS_START[0], './fonts/Vehicle_Breaks_Down_Regular.json', 0x36575D, passingObj);
 
     passingObj = {
         scene : StartScreen.scene,
         objects : StartScreen.invisibleObj
     }
 
-    TextLoader(loader, TEXTS_START[1], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
+    TextLoader(loader, TEXTS_START[1], './fonts/Vehicle_Breaks_Down_Regular.json', 0x36575D, passingObj);
 
     passingObj = {
         scene : StartScreen.scene,
@@ -114,7 +114,7 @@ const InitScene = () => {
     }
 
     for (let i=0; i<TEXTS_NAME.length; i++) {
-        TextLoader(loader, TEXTS_NAME[i],'./fonts/Sketch_3D_Regular.json', 0xF0E1D1, passingObj);
+        TextLoader(loader, TEXTS_NAME[i],'./fonts/Sketch_3D_Regular.json', 0x565F64, passingObj);
     }
 
     StartScreen.camera.position.set(0,2,1.5);
@@ -157,10 +157,14 @@ const onDocumentMouseDown = (event) => {
     if (intersects.length > 0) {
         StartScreen.raycasterObjects[0].position.y -= 0.1;
         StartScreen.invisibleObj[0].position.y -= 0.1;
-
+        /* for truck's path initial
         StartScreen.road.push(new THREE.Vector3(intersects[0].point.x, 0, intersects[0].point.z));
 
         console.log(String(intersects[0].point.x) + "," + String(intersects[0].point.z) + ",")
+        */
+        for (let i=0; i+1<truck_path.length; i+=2) {
+            StartScreen.road.push(new THREE.Vector3(truck_path[i], 0, truck_path[i+1]));
+        }
     }
 }
 
@@ -178,7 +182,7 @@ const onDocumentMouseUp = (event) => {
         StartScreen.invisibleObj[0].position.y += 0.1;
     }
 }
-
+/*
 const onDocumentKeyDown = (event) => {
     var keyName = event.key;
 
@@ -198,11 +202,11 @@ const onDocumentKeyDown = (event) => {
         StartScreen.scene.add( mesh );
     }
 }
-
+*/
 InitLoading();
 InitScene();
 window.addEventListener('mousemove',onDocumentMouseMove, false);
-window.addEventListener('keydown',onDocumentKeyDown,false);
+//window.addEventListener('keydown',onDocumentKeyDown,false);
 window.addEventListener('mousedown',onDocumentMouseDown,false);
 window.addEventListener('mouseup',onDocumentMouseUp,false);
 
