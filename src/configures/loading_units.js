@@ -1,13 +1,13 @@
 const LOADING_UNITS = [
     {
         name : 'truck',
-        position : { x: -1.8, y: 0.05, z: 1 },
+        position : { x: -1.8, y: 0.1, z: 1 },
         //animation : ['Scene'],
         animation : null,
-        rotation : null,
+        rotation : { x: 0, y: Math.PI/2, z: 0 },
         specific : null,
         entity_type : 'Steering',
-        maxSpeed : 0.01,
+        maxSpeed : 0.02,
         wanderDistance : 0.2,
         wanderAngle: 0.4,
         wanderRadius: 0.02,

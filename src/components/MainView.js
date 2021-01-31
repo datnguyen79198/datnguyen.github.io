@@ -242,7 +242,7 @@ const MainView = (src) => {
             var truckObject = StartScreen.SteeringEntities[0];
             //console.log(StartScreen.road);
             truckObject.followPath(StartScreen.road, 0.2);
-            truckObject.lookWhereGoing();
+            if (StartScreen.road.length>0) truckObject.lookWhereGoing();
             truckObject.update();
             /*
             if (StartScreen.intersect !== null) {

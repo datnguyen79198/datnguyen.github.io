@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { TEXTS_START } from '../configures/texts';
+import { TEXTS_START,TEXTS_NAME } from '../configures/texts';
 import {LOADING_MODELS} from '../configures/loading_models';
 import {LOADING_UNITS} from '../configures/loading_units';
 
@@ -46,7 +46,7 @@ const InitScene = () => {
     StartScreen.scene.add(HemisphereLight);
 
     const sunLight = new THREE.DirectionalLight(0xFEE8C9, 0.5);
-    sunLight.position.set(-7,10,-7);
+    sunLight.position.set(7,10,7);
     sunLight.target.position.set(0,0,0);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 4096;
@@ -108,6 +108,15 @@ const InitScene = () => {
 
     TextLoader(loader, TEXTS_START[1], './fonts/Vehicle_Breaks_Down_Regular.json', 0x645F58, passingObj);
 
+    passingObj = {
+        scene : StartScreen.scene,
+        objects : []
+    }
+
+    for (let i=0; i<TEXTS_NAME.length; i++) {
+        TextLoader(loader, TEXTS_NAME[i],'./fonts/Sketch_3D_Regular.json', 0xF0E1D1, passingObj);
+    }
+
     StartScreen.camera.position.set(0,2,1.5);
     StartScreen.camera.lookAt(StartScreen.scene.position);
 }
@@ -150,6 +159,8 @@ const onDocumentMouseDown = (event) => {
         StartScreen.invisibleObj[0].position.y -= 0.1;
 
         StartScreen.road.push(new THREE.Vector3(intersects[0].point.x, 0, intersects[0].point.z));
+
+        console.log(String(intersects[0].point.x) + "," + String(intersects[0].point.z) + ",")
     }
 }
 

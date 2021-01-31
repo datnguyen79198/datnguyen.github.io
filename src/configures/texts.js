@@ -1,53 +1,5 @@
 const TEXTS_INTRO = [
     {
-        text : 'NGUYEN',
-        position : {x:1, y: 0, z: 8.5},
-        rotation : null,
-        size: 0.3,
-        height: 0.1,
-        curveSegments: 2,
-        bevelEnabled: true,
-        bevelThickness: 0.001,
-        bevelSize: 0.01,
-        bevelSegments: 1
-    },
-    {
-        text : 'DAT',
-        position : {x:1.5, y: 0.35, z: 8.5},
-        rotation : null,
-        size: 0.3,
-        height: 0.1,
-        curveSegments: 2,
-        bevelEnabled: true,
-        bevelThickness: 0.001,
-        bevelSize: 0.01,
-        bevelSegments: 1
-    },
-    {
-        text : 'fullstack',
-        position : {x:2.1, y: 0.8, z: 8.5},
-        rotation : {x:0, y:0, z:-Math.PI/2 + 0.7},
-        size: 0.2,
-        height: 0.05,
-        curveSegments: 2,
-        bevelEnabled: true,
-        bevelThickness: 0.001,
-        bevelSize: 0.01,
-        bevelSegments: 1
-    },
-    {
-        text : 'developer',
-        position : {x:2.2, y: 0, z: 8.8},
-        rotation : {x:-Math.PI/2 + 0.8, y:0, z:0},
-        size: 0.2,
-        height: 0.05,
-        curveSegments: 2,
-        bevelEnabled: true,
-        bevelThickness: 0.001,
-        bevelSize: 0.01,
-        bevelSegments: 1
-    },
-    {
         text : `ACHIEVEMENTS`,
         position : {x: -8.5, y: 3, z: 2.7},
         rotation : {x:0, y:Math.PI/2, z:0.27},
@@ -296,5 +248,55 @@ const TEXTS_START = [
     }
 ]
 
+const TEXTS_NAME = [
+    {
+        text : 'NGUYEN',
+        position : {x:-0.6, y: 0, z: -2.5},
+        rotation : null,
+        size: 0.4,
+        height: 0.25,
+        curveSegments: 2,
+        bevelEnabled: true,
+        bevelThickness: 0.0001,
+        bevelSize: 0.001,
+        bevelSegments: 1
+    },
+    {
+        text : 'T.D.',
+        position : {x:1.6, y: 0, z: -2.5},
+        rotation : null,
+        size: 0.4,
+        height: 0.25,
+        curveSegments: 2,
+        bevelEnabled: true,
+        bevelThickness: 0.0001,
+        bevelSize: 0.001,
+        bevelSegments: 1
+    },
+    {
+        text : 'fullstack',
+        position : {x:0.9, y: 0, z: -1.7},
+        rotation : {x:-Math.PI/2, y:0, z:0},
+        size: 0.3,
+        height: 0.07,
+        curveSegments: 2,
+        bevelEnabled: true,
+        bevelThickness: 0.0001,
+        bevelSize: 0.001,
+        bevelSegments: 1
+    },
+    {
+        text : 'developer',
+        position : {x:0.6, y: 0, z: -1.3},
+        rotation : {x:-Math.PI/2, y:0, z:0},
+        size: 0.3,
+        height: 0.07,
+        curveSegments: 2,
+        bevelEnabled: true,
+        bevelThickness: 0.0001,
+        bevelSize: 0.001,
+        bevelSegments: 1
+    }
+]
 
-export {TEXTS_INTRO , TEXTS_AWARD, TEXTS_START};
+export {TEXTS_INTRO , TEXTS_AWARD, TEXTS_START, TEXTS_NAME};
