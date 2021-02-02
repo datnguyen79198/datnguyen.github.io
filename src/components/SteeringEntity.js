@@ -15,6 +15,8 @@ export class SteeringEntity extends Entity {
         this.wanderAngle = wanderAngle;
         this.wanderRadius = wanderRadius;
         this.wanderRange = wanderRange;
+        
+        this.cutScreen = false;
     }
 
     bounce(box) {
@@ -102,6 +104,7 @@ export class SteeringEntity extends Entity {
     }
 
     followPath(path, thresholdRadius = 0.5) {
+        if (path.length > 0 && this.locationIndex === path.length - 1) this.cutScreen = true;
         var wayPoint = path[this.locationIndex]
         //console.log(wayPoint);
         if (wayPoint == null) return;

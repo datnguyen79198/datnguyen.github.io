@@ -245,8 +245,10 @@ const MainView = (src) => {
             truckObject.followPath(StartScreen.road, 0.2);
             if (StartScreen.road.length>0) truckObject.lookWhereGoing();
             truckObject.update();
+
+            if (truckObject.cutScreen) START_RENDERING = true;
             
-            if (StartScreen.intersect !== null) {
+            if (StartScreen.intersect !== null || StartScreen.road.length > 0) {
                 if (StartScreen.raycasterObjects[0] !== undefined) StartScreen.raycasterObjects[0].visible = false;
                 if (StartScreen.invisibleObj[0] !== undefined) StartScreen.invisibleObj[0].visible = true;
                 if (!beenMouseover) {
