@@ -74,9 +74,9 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(0, 10, 13);
-            //camera.lookAt(10,1,3);
-            camera.lookAt(worldScene.position);
+            camera.position.set(3, 2, 3);
+            camera.lookAt(10,2,3);
+            //camera.lookAt(worldScene.position);
 
             //light 
             const HemisphereLight = new THREE.HemisphereLight( 0xFFF6DD, 0x05050C, 1.1 );
@@ -156,6 +156,15 @@ const MainView = (src) => {
             for (let i=0; i<TEXTS_AWARD.length; i++) {
                 TextLoader(loader, TEXTS_AWARD[i],'./fonts/Bakso.json', 0xBF0303, passingObj);
             }
+
+            //custom texture onto plane
+            var boardGeo = new THREE.PlaneGeometry(1.75,0.84);
+            var boardTexture = new THREE.TextureLoader().load('./images/0.png');
+            var boardMat = new THREE.MeshLambertMaterial( {map : boardTexture} );
+            var cinemaBoard = new THREE.Mesh(boardGeo,boardMat);
+            cinemaBoard.position.set(7.125,1.02,4.5);
+            cinemaBoard.rotation.set(0,-Math.PI/2,0);
+            worldScene.add(cinemaBoard);
 
             //window events
             window.addEventListener('resize', onWindowResize, false);
@@ -239,7 +248,7 @@ const MainView = (src) => {
                 StartScreen.mixers[i].mixer.update(mixerUpdateDelta);
             }
 
-
+            
             var truckObject = StartScreen.SteeringEntities[0];
             //console.log(StartScreen.road);
             truckObject.followPath(StartScreen.road, 0.2);

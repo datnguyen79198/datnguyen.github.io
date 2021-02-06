@@ -7,7 +7,7 @@ const LOADING_UNITS = [
         rotation : { x: 0, y: Math.PI/2, z: 0 },
         specific : null,
         entity_type : 'Steering',
-        maxSpeed : 0.02,
+        maxSpeed : 0.03,
         wanderDistance : 0.2,
         wanderAngle: 0.4,
         wanderRadius: 0.02,

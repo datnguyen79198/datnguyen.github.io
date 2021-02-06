@@ -132,10 +132,10 @@ const onDocumentMouseMove = (event) => {
     if (event.ctrlKey) {
         const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
         if (intersects.length > 0) {
-            /* for initial texture
+            //for initial texture
             StartScreen.road.push(new THREE.Vector2(intersects[0].point.x, intersects[0].point.z));
             StartScreen.copy += String(intersects[0].point.x)+','+String(intersects[0].point.z)+',';
-            */
+            
         }
     }
     else {
@@ -162,6 +162,7 @@ const onDocumentMouseDown = (event) => {
 
         console.log(String(intersects[0].point.x) + "," + String(intersects[0].point.z) + ",")
         */
+        
         for (let i=0; i+1<truck_path.length; i+=2) {
             StartScreen.road.push(new THREE.Vector3(truck_path[i], 0, truck_path[i+1]));
         }
@@ -182,7 +183,7 @@ const onDocumentMouseUp = (event) => {
         StartScreen.invisibleObj[0].position.y += 0.1;
     }
 }
-/*
+
 const onDocumentKeyDown = (event) => {
     var keyName = event.key;
 
@@ -202,11 +203,11 @@ const onDocumentKeyDown = (event) => {
         StartScreen.scene.add( mesh );
     }
 }
-*/
+
 InitLoading();
 InitScene();
 window.addEventListener('mousemove',onDocumentMouseMove, false);
-//window.addEventListener('keydown',onDocumentKeyDown,false);
+window.addEventListener('keydown',onDocumentKeyDown,false);
 window.addEventListener('mousedown',onDocumentMouseDown,false);
 window.addEventListener('mouseup',onDocumentMouseUp,false);
 

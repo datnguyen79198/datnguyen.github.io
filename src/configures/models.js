@@ -112,5 +112,11 @@ export const MODELS = [
         url : './asserts/fish_2/scene.gltf',
         castShadow : true,
         receiveShadow : true
+    },
+    {
+        name : 'board',
+        url : './asserts/board/scene.gltf',
+        castShadow : true,
+        receiveShadow : true
     }
 ] 

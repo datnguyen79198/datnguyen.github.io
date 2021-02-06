@@ -121,7 +121,7 @@ const UNITS = [
     },
     {
         name : 'notice_board',
-        position : { x: 8.5, y: -0.4, z: 5.6},
+        position : { x: 6.5, y: -0.4, z: 7.5},
         animation : null,
         rotation : {x:0, y:Math.PI/2, z: 0},
         entity_type : 'Obstacle',
@@ -149,6 +149,15 @@ const UNITS = [
         wanderRadius: 0.02,
         wanderRange: 0.3,
         scale : 0.3
+    },
+    {
+        name : 'board',
+        position : { x: 7.2, y: 0, z: 4.5},
+        animation : null,
+        rotation : {x:0, y:-Math.PI/2, z: 0},
+        entity_type : 'Obstacle',
+        boundingRadius : 1,
+        scale : 0.5
     }
 ];
 

@@ -13,7 +13,7 @@ const TEXTS_INTRO = [
     },
     {
         text : `CONTACT`,
-        position : {x: 5, y: 0, z: 5.5},
+        position : { x: 3, y: 0, z: 7.5},
         rotation : {x:0, y:-Math.PI/2, z:0},
         size: 0.26,
         height: 0.09,
