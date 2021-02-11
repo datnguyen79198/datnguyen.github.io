@@ -26,8 +26,12 @@ const MainView = (src) => {
             scene : null,
             objects : null
         };
+        var boardGeo,boardMat,cinemaBoard,boardTexture,boardIndex=0;
+        var mouse,raycaster;
 
         const InitLoadingScene = () => {
+            mouse = new THREE.Vector2();
+            raycaster = new THREE.Raycaster();
             loadingManager = new THREE.LoadingManager();
 
             loadingManager.onLoad = () => {
@@ -74,8 +78,8 @@ const MainView = (src) => {
             //camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
             //camera.position.set(0, 1, 3);
-            camera.position.set(3, 2, 3);
-            camera.lookAt(10,2,3);
+            camera.position.set(5, 2, 4);
+            camera.lookAt(10,2,4);
             //camera.lookAt(worldScene.position);
 
             //light 
@@ -158,17 +162,28 @@ const MainView = (src) => {
             }
 
             //custom texture onto plane
-            var boardGeo = new THREE.PlaneGeometry(1.75,0.84);
-            var boardTexture = new THREE.TextureLoader().load('./images/0.png');
-            var boardMat = new THREE.MeshLambertMaterial( {map : boardTexture} );
-            var cinemaBoard = new THREE.Mesh(boardGeo,boardMat);
-            cinemaBoard.position.set(7.125,1.02,4.5);
-            cinemaBoard.rotation.set(0,-Math.PI/2,0);
-            worldScene.add(cinemaBoard);
+            createBoard(0);
 
             //window events
             window.addEventListener('resize', onWindowResize, false);
+            window.addEventListener('mousedown',onMouseDown, false);
 
+        }
+
+        const createBoard = (index) => {
+            if (cinemaBoard) {
+                cinemaBoard.geometry.dispose();
+                cinemaBoard.material.dispose();
+                worldScene.remove(cinemaBoard);
+            }
+            boardGeo = new THREE.PlaneGeometry(1.75,0.84);
+            let url = './images/' + String(index) +'.png';
+            boardTexture = new THREE.TextureLoader().load(url);
+            boardMat = new THREE.MeshLambertMaterial( {map : boardTexture} );
+            cinemaBoard = new THREE.Mesh(boardGeo,boardMat);
+            cinemaBoard.position.set(7.125,1.02,4.5);
+            cinemaBoard.rotation.set(0,-Math.PI/2,0);
+            worldScene.add(cinemaBoard);
         }
         
         const InitRenderer = () => {
@@ -339,6 +354,29 @@ const MainView = (src) => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        const onMouseDown = (event) => {
+            event.preventDefault();
+
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1; 
+    
+            raycaster.setFromCamera(mouse, camera);
+
+            const intersects = raycaster.intersectObject(cinemaBoard);
+            if (intersects.length > 0) {
+                //console.log(intersects[0].point.x + ' ' + intersects[0].point.y + ' ' + intersects[0].point.z) 
+                //7.125 0.748331188054677 4.290530456818139
+                //7.125 0.680323309527247 4.650000671891698
+                var iy = intersects[0].point.y, iz = intersects[0].point.z;
+                if (boardIndex===0 && iy >= 0.680323309527247 && iy <= 0.748331188054677 && 
+                    iz >= 4.290530456818139 && iz <= 4.650000671891698) {
+                        boardIndex+=1;
+                        createBoard(boardIndex);
+                    }
+            }
+
         }
 
         const onPushKeyboard = (event) => {

@@ -169,20 +169,6 @@ const onDocumentMouseDown = (event) => {
     }
 }
 
-const onDocumentMouseUp = (event) => {
-    event.preventDefault();
-
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1; 
-    
-    raycaster.setFromCamera(mouse, StartScreen.camera);
-
-    const intersects = raycaster.intersectObjects( StartScreen.raycasterObjects,true );
-    if (intersects.length > 0) {
-        StartScreen.raycasterObjects[0].position.y += 0.1;
-        StartScreen.invisibleObj[0].position.y += 0.1;
-    }
-}
 
 const onDocumentKeyDown = (event) => {
     var keyName = event.key;
@@ -209,7 +195,7 @@ InitScene();
 window.addEventListener('mousemove',onDocumentMouseMove, false);
 window.addEventListener('keydown',onDocumentKeyDown,false);
 window.addEventListener('mousedown',onDocumentMouseDown,false);
-window.addEventListener('mouseup',onDocumentMouseUp,false);
+//window.addEventListener('mouseup',onDocumentMouseUp,false);
 
 var passingObjMain = {
     MODELS : LOADING_MODELS,
